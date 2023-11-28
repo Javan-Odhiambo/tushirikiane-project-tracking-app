@@ -1,0 +1,44 @@
+# Django
+*.pyc
+__pycache__/
+*.sqlite3
+*.pyo
+*.pyd
+
+# React
+**/node_modules/
+/build
+
+# TypeScript
+*.js
+*.js.map
+*.d.ts
+
+# Editor/IDE
+.vscode/
+.idea/
+
+# Miscellaneous
+.DS_Store
+.env
+# Virtual Environments
+venv/
+env/
+
+# Editor directories and files
+!.vscode/extensions.json
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
