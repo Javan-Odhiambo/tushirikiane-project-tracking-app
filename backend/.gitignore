@@ -1,0 +1,40 @@
+# Ignore compiled Python files
+*.pyc
+
+# Ignore the virtual environment
+venv/
+
+# Ignore the Django secret key
+secret_key.txt
+
+# Ignore the database
+db.sqlite3
+
+# Ignore static files
+staticfiles/
+
+# Ignore media files
+media/
+
+# Ignore log files
+*.log
+
+# Ignore environment-specific settings
+.env
+
+# Ignore IDE files
+.vscode/
+.idea/
+*.pydevproject
+
+# Ignore local development settings
+local_settings.py
+
+# Ignore Docker Compose files
+docker-compose.yml
+docker-compose.dev.yml
+docker-compose.prod.yml
+
+# Ignore Heroku deployment files
+Procfile
+```
