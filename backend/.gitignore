@@ -37,4 +37,9 @@ docker-compose.prod.yml
 
 # Ignore Heroku deployment files
 Procfile
+
+# Ignore migrations
+**/migrations/
+media/*
+
 ```
