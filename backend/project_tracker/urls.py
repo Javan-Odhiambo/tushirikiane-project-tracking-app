@@ -1,11 +1,10 @@
 from rest_framework.routers import DefaultRouter
 
-from project_tracker.viewsets import MemberViewSet, ProjectViewSet, TaskViewSet
+from project_tracker import viewsets
 
 router = DefaultRouter()
 
-router.register("projects", ProjectViewSet)
-router.register("tasks", TaskViewSet)
-router.register("members", MemberViewSet)
+router.register(prefix="projects", viewset=viewsets.ProjectViewSet, basename="project")
+router.register(prefix="tasks", viewset=viewsets.TaskViewSet, basename="task")
 
 urlpatterns = router.urls
