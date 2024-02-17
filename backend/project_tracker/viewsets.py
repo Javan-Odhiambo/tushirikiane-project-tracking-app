@@ -19,13 +19,20 @@ from project_tracker.services import (
 class ProjectViewSet(viewsets.ModelViewSet):
     """Viewset for the Project model."""
 
-    serializer_class = serializers.ProjectSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         """Return projects that the user is a member of."""
         user = self.request.user
         return models.Project.objects.filter(members=user)
+    
+    def get_serializer_class(self):
+        """Return the serializer class based on the action."""
+        if self.action == 'list':
+            return serializers.ProjectListSerializer
+        elif self.action == 'retrieve':
+            return serializers.ProjectDetailSerializer
+        return serializers.ProjectDetailSerializer
 
     @action(detail=True, methods=["GET", "POST", "PUT"])
     def members(self, request, pk=None):
