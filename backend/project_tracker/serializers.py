@@ -5,22 +5,24 @@ from accounts.serializers import CustomUserSerializer
 from project_tracker import models
 
 
-
 class MemberSerializer(serializers.ModelSerializer):
     user = CustomUserSerializer(read_only=True)
 
     class Meta:
         model = models.Member
         fields = ["user", "is_admin", "is_owner"]
-        
+
+
 class ProjectListSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Project
-        fields = ['id', 'title', 'is_active']
+        fields = ["id", "title", "is_active"]
+
 
 class ProjectDetailSerializer(serializers.ModelSerializer):
     members = serializers.SerializerMethodField()
     tasks = serializers.SerializerMethodField()
+
     class Meta:
         model = models.Project
 
@@ -48,15 +50,14 @@ class ProjectDetailSerializer(serializers.ModelSerializer):
         instance.is_active = validated_data.get("is_active", instance.is_active)
         instance.save()
         return instance
-    
+
     def get_members(self, obj):
         members = models.Member.objects.filter(project=obj)
         return MemberSerializer(members, many=True).data
-    
+
     def get_tasks(self, obj):
         tasks = models.Task.objects.filter(project=obj)
         return TaskSerializer(tasks, many=True).data
-
 
 
 class TaskSerializer(serializers.ModelSerializer):

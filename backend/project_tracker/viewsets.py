@@ -8,11 +8,11 @@ from project_tracker.services import (
     add_members,
     archive_project,
     get_members,
+    get_my_tasks,
     get_project_tasks,
     get_requests,
     leave_project,
     update_member,
-    get_my_tasks,
 )
 
 
@@ -25,12 +25,12 @@ class ProjectViewSet(viewsets.ModelViewSet):
         """Return projects that the user is a member of."""
         user = self.request.user
         return models.Project.objects.filter(members=user)
-    
+
     def get_serializer_class(self):
         """Return the serializer class based on the action."""
-        if self.action == 'list':
+        if self.action == "list":
             return serializers.ProjectListSerializer
-        elif self.action == 'retrieve':
+        elif self.action == "retrieve":
             return serializers.ProjectDetailSerializer
         return serializers.ProjectDetailSerializer
 

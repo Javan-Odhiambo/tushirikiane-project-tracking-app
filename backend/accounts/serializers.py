@@ -24,5 +24,4 @@ class CustomUserSerializer(UserSerializer):
             "middle_name",
             "last_name",
             "profile_picture",
-
         ]
