@@ -62,7 +62,11 @@ class Task(models.Model):
         null=True,
     )
     assignor = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="tasks_assigned_by"
+        User,
+        on_delete=models.CASCADE,
+        related_name="tasks_assigned_by",
+        null=True,
+        blank=True,
     )
     status = models.CharField(_("status"), max_length=50, choices=STATUS_CHOICES)
     start_at = models.DateTimeField(_("start at"))

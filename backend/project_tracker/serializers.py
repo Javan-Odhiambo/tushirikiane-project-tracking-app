@@ -13,16 +13,7 @@ class MemberSerializer(serializers.ModelSerializer):
         fields = ["user", "is_admin", "is_owner"]
 
 
-class ProjectListSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = models.Project
-        fields = ["id", "title", "is_active"]
-
-
-class ProjectDetailSerializer(serializers.ModelSerializer):
-    members = serializers.SerializerMethodField()
-    tasks = serializers.SerializerMethodField()
-
+class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Project
 
@@ -31,8 +22,8 @@ class ProjectDetailSerializer(serializers.ModelSerializer):
             "title",
             "description",
             "is_active",
-            "members",
-            "tasks",
+            "created_at",
+            "updated_at",
         ]
         read_only_fields = ["created_at", "updated_at"]
 
@@ -50,14 +41,6 @@ class ProjectDetailSerializer(serializers.ModelSerializer):
         instance.is_active = validated_data.get("is_active", instance.is_active)
         instance.save()
         return instance
-
-    def get_members(self, obj):
-        members = models.Member.objects.filter(project=obj)
-        return MemberSerializer(members, many=True).data
-
-    def get_tasks(self, obj):
-        tasks = models.Task.objects.filter(project=obj)
-        return TaskSerializer(tasks, many=True).data
 
 
 class TaskSerializer(serializers.ModelSerializer):
