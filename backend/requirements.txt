@@ -6,6 +6,7 @@ charset-normalizer==3.3.2
 click==8.1.7
 cryptography==41.0.7
 defusedxml==0.8.0rc2
+dj-database-url==2.1.0
 Django==5.0
 django-cors-headers==4.3.1
 django-templated-mail==1.1.1
@@ -22,6 +23,7 @@ Pillow==10.1.0
 platformdirs==4.1.0
 pycparser==2.21
 PyJWT==2.8.0
+python-decouple==3.8
 python3-openid==3.2.0
 pytz==2023.3.post1
 requests==2.31.0
@@ -32,3 +34,4 @@ sqlparse==0.4.4
 tomli==2.0.1
 typing-extensions==4.9.0
 urllib3==2.1.0
+whitenoise==6.6.0

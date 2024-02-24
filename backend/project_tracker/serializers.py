@@ -1,20 +1,29 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-from accounts.serializers import UserSerializer
+from accounts.serializers import CustomUserSerializer
 from project_tracker import models
 
 
-class ProjectSerializer(serializers.HyperlinkedModelSerializer):
+class MemberSerializer(serializers.ModelSerializer):
+    user = CustomUserSerializer(read_only=True)
+
+    class Meta:
+        model = models.Member
+        fields = ["user", "is_admin", "is_owner"]
+
+
+class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Project
 
         fields = [
             "id",
-            "url",
             "title",
             "description",
             "is_active",
+            "created_at",
+            "updated_at",
         ]
         read_only_fields = ["created_at", "updated_at"]
 
@@ -34,23 +43,14 @@ class ProjectSerializer(serializers.HyperlinkedModelSerializer):
         return instance
 
 
-class MemberSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)
-
-    class Meta:
-        model = models.Member
-        fields = ["user", "is_admin", "is_owner"]
-
-
-class TaskSerializer(serializers.HyperlinkedModelSerializer):
-    assignee = UserSerializer(read_only=True)
-    assignor = UserSerializer(read_only=True)
+class TaskSerializer(serializers.ModelSerializer):
+    assignee = CustomUserSerializer(read_only=True)
+    assignor = CustomUserSerializer(read_only=True)
 
     class Meta:
         model = models.Task
         fields = [
             "id",
-            "url",
             "title",
             "description",
             "project",
@@ -67,7 +67,7 @@ class TaskSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class RequestSerializer(serializers.ModelSerializer):
-    member = UserSerializer(read_only=True)
+    member = CustomUserSerializer(read_only=True)
     task = TaskSerializer()
 
     class Meta:
