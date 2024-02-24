@@ -43,11 +43,9 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    # Third-party Packages
     "corsheaders",
     "rest_framework",
     "rest_framework.authtoken",
-    # Djoser
     "djoser",
     # Custom Apps
     "accounts.apps.AccountsConfig",
