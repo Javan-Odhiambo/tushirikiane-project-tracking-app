@@ -102,6 +102,7 @@ class Request(models.Model):
     class Meta:
         verbose_name = _("request")
         verbose_name_plural = _("requests")
+        unique_together = ["member", "task"]
 
     def __str__(self) -> str:
         return f"Request for {self.task.title} by {self.member.email}"

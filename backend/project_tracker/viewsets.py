@@ -2,6 +2,7 @@ from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework import views
 
 from accounts.authentication import CustomJWTAuthentication
 from project_tracker import models, serializers
@@ -14,6 +15,7 @@ from project_tracker.services import (
     get_members,
     get_my_tasks,
     get_project_tasks,
+    get_request,
     get_requests,
     leave_project,
     unarchive_project,
@@ -51,26 +53,6 @@ class ProjectViewSet(viewsets.ModelViewSet):
             members = get_members(project, request)
             return Response(members, status=status.HTTP_200_OK)
 
-    @action(detail=True, methods=["GET", "POST", "DELETE"])
-    def task_requests(self, request, pk=None):
-        """
-        GET: Get requests for the project
-        POST: Add request for a task
-            request body = task_id
-        DELETE: Delete request for a task
-            request body = request_id
-        """
-        project = self.get_object()
-        if request.method == "GET":
-            requests = get_requests(project, request)
-            return Response(requests, status=status.HTTP_200_OK)
-        elif request.method == "POST":
-            requests = add_task_requests(project, request)
-            return Response(requests, status=status.HTTP_200_OK)
-        else:
-            requests = delete_task_requests(project, request)
-            return Response(requests, status=status.HTTP_200_OK)
-
     @action(detail=True, methods=["POST"])
     def leave_project(self, request, pk=None):
         """Leave project"""
@@ -102,6 +84,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
 class TaskViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.TaskSerializer
     permission_classes = [IsAuthenticated]
+    authentication_classes = [CustomJWTAuthentication]
 
     def get_queryset(self):
         """Return tasks of projects that the user is a member of."""
@@ -113,3 +96,33 @@ class TaskViewSet(viewsets.ModelViewSet):
         """Return tasks that the user is assigned to."""
         my_tasks = get_my_tasks(request.user, request)
         return Response(my_tasks, status=status.HTTP_200_OK)
+
+    @action(
+        detail=True,
+        methods=[
+            "GET",
+            "POST",
+        ],
+    )
+    def requests(self, request, pk=None, request_id=None):
+        """
+        GET: Get requests for the project
+        POST: Add request for a task
+            request body = task_id
+        DELETE: Delete request for a task
+            request body = request_id
+        """
+        status = None
+        task = self.get_object()
+        if request.method == "GET":
+            if request_id:
+                requests, status = get_request(request_id, request)
+            else:
+                requests, status = get_requests(task, request)
+            return Response(requests, status=status)
+        elif request.method == "POST":
+            requests, status = add_task_requests(task, request)
+            return Response(requests, status=status)
+        else:
+            response = delete_task_requests(request_id)
+            return Response(response, status=status.HTTP_200_OK)

@@ -1,4 +1,5 @@
 from datetime import datetime, timezone
+from rest_framework import status
 
 from django.contrib.auth import get_user_model
 
@@ -89,30 +90,41 @@ def get_tasks(project, request):
     return serializer.data
 
 
-def get_requests(project, request):
+def get_requests(task, request):
     """Get tasks requests."""
-    tasks = models.Task.objects.filter(project=project)
-    serialized_requests = []
-    for task in tasks:
-        request_data = serializers.RequestSerializer(
-            models.Request.objects.filter(task=task),
-            many=True,
-            context={"request": request},
-        ).data
-        serialized_requests.extend(request_data)
-    return serialized_requests
+    requests = models.Request.objects.filter(task=task)
+    serializer = serializers.TaskRequestSerializer(
+        requests, many=True, context={"request": request}
+    )
+    return serializer.data, status.HTTP_200_OK
 
 
-def add_task_requests(project, request):
+def get_request(request_id, request):
+    """Get tasks requests."""
+    try:
+        request = models.Request.objects.get(pk=request_id)
+        serializer = serializers.TaskRequestSerializer(
+            request, context={"request": request}
+        )
+        return serializer.data, status.HTTP_200_OK
+    except models.Request.DoesNotExist:
+        return {"detail": "Request does not exist."}, status.HTTP_404_NOT_FOUND
+
+
+def add_task_requests(task, request):
     """Add task requests."""
-    task = models.Task.objects.get(pk=request.data["task_id"])
-    models.Request.objects.create(task=task, member=request.user, status="pending")
-    return {"detail": "Request has been sent."}
+    new_request, created = models.Request.objects.get_or_create(
+        task=task, member=request.user, status="pending"
+    )
+    if created:
+        return serializers.TaskRequestSerializer(new_request, context={"request": request}).data, status.HTTP_201_CREATED
+    else:
+        return {"detail": "Request already sent"}, status.HTTP_200_OK
 
 
-def delete_task_requests(project, request):
+def delete_task_requests(request_id):
     """Delete task requests."""
-    request = models.Request.objects.get(pk=request.data["request_id"])
+    request = models.Request.objects.get(pk=request_id)
     request.delete()
     return {"detail": "Request has been deleted."}
 

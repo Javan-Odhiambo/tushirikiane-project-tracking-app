@@ -66,9 +66,8 @@ class TaskSerializer(serializers.ModelSerializer):
         read_only_fields = ["project"]
 
 
-class RequestSerializer(serializers.ModelSerializer):
+class TaskRequestSerializer(serializers.ModelSerializer):
     member = CustomUserSerializer(read_only=True)
-    task = TaskSerializer()
 
     class Meta:
         model = models.Request
