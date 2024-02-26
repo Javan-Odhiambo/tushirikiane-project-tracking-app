@@ -68,9 +68,14 @@ class Task(models.Model):
         null=True,
         blank=True,
     )
+    created_by = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="tasks_created_by",
+    )
     status = models.CharField(_("status"), max_length=50, choices=STATUS_CHOICES)
-    start_at = models.DateTimeField(_("start at"))
-    due_at = models.DateTimeField(_("due at"))
+    start_at = models.DateTimeField(_("start at"), null=True, blank=True)
+    due_at = models.DateTimeField(_("due at"), null=True, blank=True)
     completed_at = models.DateTimeField(_("completed at"), null=True, blank=True)
     created_at = models.DateTimeField(_("created at"), auto_now_add=True)
     updated_at = models.DateTimeField(_("updated at"), auto_now=True)

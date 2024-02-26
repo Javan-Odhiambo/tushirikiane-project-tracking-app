@@ -1,5 +1,8 @@
 from datetime import datetime, timezone
+from django.http import HttpRequest
+from django.shortcuts import get_object_or_404
 from rest_framework import status
+from django.db import transaction
 
 from django.contrib.auth import get_user_model
 
@@ -117,7 +120,12 @@ def add_task_requests(task, request):
         task=task, member=request.user, status="pending"
     )
     if created:
-        return serializers.TaskRequestSerializer(new_request, context={"request": request}).data, status.HTTP_201_CREATED
+        return (
+            serializers.TaskRequestSerializer(
+                new_request, context={"request": request}
+            ).data,
+            status.HTTP_201_CREATED,
+        )
     else:
         return {"detail": "Request already sent"}, status.HTTP_200_OK
 
@@ -143,6 +151,23 @@ def unarchive_project(project, request):
     return {"detail": "Project has been unarchived."}
 
 
+def approve_request(request_id, request):
+    """Approve task request"""
+    print(request.user.id)
+    with transaction.atomic():
+        member = get_object_or_404(models.Member, pk=request.data["member_id"])
+        request = get_object_or_404(models.Request, pk=request_id)
+        task = get_object_or_404(models.Task, pk=request.task.id)
+        task.assignor = User.objects.get(id=request.user.id)
+        task.assignee = member.user
+        task.status = "in_progress"
+        request.status = "approved"
+        task.save()
+        request.save()
+        return {"detail": "Request has been approved."}, status.HTTP_200_OK
+    return {"detail": "Request could not be approved."}, status.HTTP_400_BAD_REQUEST
+
+
 def leave_project(project, user):
     """Leave a project."""
     project.members.remove(user)
@@ -160,17 +185,33 @@ def get_project_tasks(project, request):
 
 def add_project_task(project, request):
     """Add a task to a project."""
+    assignee_id = request.data.get("assignee", None)
+    if assignee_id:
+        try:
+            user = User.objects.get(id=assignee_id)
+            assignee = (
+                user if models.Member.objects.get(user=user, project=project) else None
+            )
+        except Exception as e:
+            return {"detail": "Assignee not found."}, status.HTTP_400_BAD_REQUEST
+    else:
+        assignee = None
+
     task = models.Task.objects.create(
         title=request.data["title"],
         description=request.data.get("description", ""),
         project=project,
-        assignee=request.data.get("assignee", None),
-        assignor=request.user if request.data.get("assignee", None) else None,
+        created_by=request.user,
+        assignee=assignee,
+        assignor=request.user if assignee else None,
         status=request.data.get("status", "pending"),
-        start_at=request.data.get("start_at", datetime.now(timezone.utc)),
-        due_at=request.data.get("due_at", datetime.now(timezone.utc)),
+        start_at=request.data.get("start_at", None),
+        due_at=request.data.get("due_at", None),
     )
-    return serializers.TaskSerializer(task, context={"request": request}).data
+    return (
+        serializers.TaskSerializer(task, context={"request": request}).data,
+        status.HTTP_201_CREATED,
+    )
 
 
 def get_my_tasks(user, request):

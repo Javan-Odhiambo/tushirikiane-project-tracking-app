@@ -10,7 +10,7 @@ class MemberSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Member
-        fields = ["user", "is_admin", "is_owner"]
+        fields = ["id", "user", "is_admin", "is_owner"]
 
 
 class ProjectSerializer(serializers.ModelSerializer):
@@ -29,6 +29,7 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user = self.context["request"].user
+        validated_data["is_active"] = True
         project = models.Project.objects.create(**validated_data)
         models.Member.objects.create(
             user=user, project=project, is_admin=True, is_owner=True
@@ -46,6 +47,7 @@ class ProjectSerializer(serializers.ModelSerializer):
 class TaskSerializer(serializers.ModelSerializer):
     assignee = CustomUserSerializer(read_only=True)
     assignor = CustomUserSerializer(read_only=True)
+    created_by = CustomUserSerializer(read_only=True)
 
     class Meta:
         model = models.Task
@@ -54,9 +56,10 @@ class TaskSerializer(serializers.ModelSerializer):
             "title",
             "description",
             "project",
+            "status",
             "assignee",
             "assignor",
-            "status",
+            "created_by",
             "start_at",
             "due_at",
             "completed_at",
@@ -65,6 +68,12 @@ class TaskSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ["project"]
 
+    def create(self, validated_data):
+        user = self.context["request"].user
+        validated_data["created_by"] = user
+        print(validated_data)
+        task = models.Task.objects.create(**validated_data)
+        return task
 
 class TaskRequestSerializer(serializers.ModelSerializer):
     member = CustomUserSerializer(read_only=True)

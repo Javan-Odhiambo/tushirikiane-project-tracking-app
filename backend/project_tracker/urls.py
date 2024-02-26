@@ -16,4 +16,9 @@ urlpatterns += [
         viewsets.TaskViewSet.as_view({"get": "requests", "delete": "requests"}),
         name="task-requests",
     ),
+    path(
+        "tasks/<int:pk>/requests/<int:request_id>/approve/",
+        viewsets.TaskViewSet.as_view({"post": "approve_request"}),
+        name="task-requests",
+    ),
 ]

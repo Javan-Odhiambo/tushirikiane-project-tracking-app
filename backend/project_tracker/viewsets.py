@@ -10,6 +10,7 @@ from project_tracker.services import (
     add_members,
     add_project_task,
     add_task_requests,
+    approve_request,
     archive_project,
     delete_task_requests,
     get_members,
@@ -77,8 +78,11 @@ class ProjectViewSet(viewsets.ModelViewSet):
             tasks = get_project_tasks(project, request)
             return Response(tasks, status=status.HTTP_200_OK)
         elif request.method == "POST":
-            response = add_project_task(project, request)
-            return Response(response, status=status.HTTP_200_OK)
+            response, status = add_project_task(project, request)
+            return Response(response, status=status)
+
+    @action(detail=True, methods=["DELETE"])
+    def remove_member(self, request, pk=None, member_id=None): ...
 
 
 class TaskViewSet(viewsets.ModelViewSet):
@@ -126,3 +130,9 @@ class TaskViewSet(viewsets.ModelViewSet):
         else:
             response = delete_task_requests(request_id)
             return Response(response, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=["POST"])
+    def approve_request(self, request, pk=None, request_id=None):
+        """Approve request"""
+        response, status = approve_request(request_id, request)
+        return Response(response, status=status)
