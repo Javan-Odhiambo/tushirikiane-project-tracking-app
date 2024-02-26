@@ -1,5 +1,4 @@
 import React, { MouseEventHandler, useState, useEffect } from 'react'
-import Function from '@react/types'
 
 import { getMembers } from './../../api/api'
 

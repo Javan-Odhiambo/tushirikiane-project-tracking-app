@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { getProjectTasks } from '../../api/api';
 
 import { Task } from '../../types/types';
-import { capitalize, formatDateTime, formatFullDate, formatFullDateTime } from '../../utils/utils';
+import { capitalize, formatFullDateTime } from '../../utils/utils';
 
 type TaskContainerProps = {
     projectId: string
@@ -21,8 +21,8 @@ const TaskContainer = ({ projectId }: TaskContainerProps) => {
     const [inProgressTasks, setInProgressTasks] = useState<Task[]>([]);
     const [completedTasks, setCompletedTasks] = useState<Task[]>([]);
 
-    const makeActive = (e: React.MouseEvent<HTMLSpanElement>) => {
-        switch (e?.target?.id) {
+    const makeActive = (e: React.MouseEvent) => {
+        switch ((e.target as HTMLSpanElement).id) {
             case 'pending_btn':
                 setShowPending(true);
                 setShowAssigned(false);

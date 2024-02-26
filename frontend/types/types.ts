@@ -42,7 +42,13 @@ export type Task = {
     "created_at": string,
     "updated_at": string
 }
-
+export type TaskInput = {
+    "title": string,
+    "description": string| null,
+    "project": string,
+    "start_at": string | null,
+    "due_at": string | null,
+}
 type TaskRequestStatus = "pending" | "accepted" | "rejected"
 
 export type TaskRequest = {

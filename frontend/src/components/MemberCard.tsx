@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import { Member } from './../types/types'
+import { Member } from './../../types/types'
 
 import { useUser } from './../../context/UserContext'
 

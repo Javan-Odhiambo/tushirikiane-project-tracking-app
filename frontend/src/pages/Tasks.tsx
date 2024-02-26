@@ -26,16 +26,16 @@ const Tasks: React.FC = () => {
     <section className="border border-indigo-200 rounded-md overflow-hidden shadow mx-4 md:w-2/3 lg:w-1/2">
 
         <div className="flex text-lg border-b border-indigo-200 font-semibold text-center">
-            <span onClick={e => setActiveTabID(e.target.id)} id="assigned_btn" data-section="#assigned" className="heading_btn border-r border-indigo-200 hover:cursor-pointer flex-1 py-1">Assigned</span>
-            <span onClick={e => setActiveTabID(e.target.id)} id="in_progress_btn" data-section="#in_progress" className="heading_btn border-r border-indigo-200 hover:cursor-pointer flex-1 py-1">In Progress</span>
-            <span onClick={e => setActiveTabID(e.target.id)} id="completed_btn" data-section="#completed" className="heading_btn hover:cursor-pointer flex-1 py-1">Completed</span>
+            <span onClick={e => setActiveTabID((e.target as HTMLSpanElement).id)} id="assigned_btn" data-section="#assigned" className="heading_btn border-r border-indigo-200 hover:cursor-pointer flex-1 py-1">Assigned</span>
+            <span onClick={e => setActiveTabID((e.target as HTMLSpanElement).id)} id="in_progress_btn" data-section="#in_progress" className="heading_btn border-r border-indigo-200 hover:cursor-pointer flex-1 py-1">In Progress</span>
+            <span onClick={e => setActiveTabID((e.target as HTMLSpanElement).id)} id="completed_btn" data-section="#completed" className="heading_btn hover:cursor-pointer flex-1 py-1">Completed</span>
         </div>
 
         {/* <!-----Tasks container-------> */}
         <div className="flex">
 
             {/* <!---------------Assigned tasks container-----------------------> */}
-            <div id="assigned" className='tab-content'>  
+            <div id="assigned" className='tab-content'>
 
                 <div className="border-b border-gray-200 p-2">
                     <h3 className="text-xl font-bold">Assigned</h3>

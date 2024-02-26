@@ -17,7 +17,7 @@ const AddTaskModal = ({ setShowAddTask, projectId, members }: AddTaskModalProps)
     const [description, setDescription] = useState('')
     const [startAt, setStartAt] = useState('')
     const [dueAt, setDueAt] = useState('')
-    const [assignee, setAssignee] = useState('')
+    const [assignee, setAssignee] = useState(NaN)
     const [error, setError] = useState('')
     const [success, setSuccess] = useState('')
     const [loading, setLoading] = useState(false)
@@ -30,7 +30,7 @@ const AddTaskModal = ({ setShowAddTask, projectId, members }: AddTaskModalProps)
 
     const formHandler = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        createTask({ title, description, start_at: startAt, due_at: dueAt, assignee, project: projectId })
+        createTask({ title, description, start_at: startAt, due_at: dueAt, project: projectId })
             .then(res => {
                 console.log(res)
                 setSuccess('Task created successfully')

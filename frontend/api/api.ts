@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 import LocalStorageService from "../services/LocalStorageService"
-import { Project, Task } from '../types/types';
+import { Project, Task, TaskInput } from '../types/types';
 
 const localStorageService = LocalStorageService.getService();
 
@@ -178,7 +178,7 @@ export async function createProject(data: Project) {
     }
 }
 
-export async function createTask(data: Task) {
+export async function createTask(data: TaskInput) {
     try {
         const response = await api.post('/projects/1/tasks', data);
         return response.data;

@@ -23,7 +23,7 @@ interface RouteParams {
 
 const ProjectDetail: React.FC = () => {
     const { projectId } = useParams<RouteParams>();
-    const [project, setProject] = useState<Project>(null);
+    const [project, setProject] = useState<Project | null>(null);
     const [members, setMembers] = useState<Member[] | undefined>(undefined);
 
     const [showMembers, setShowMembers] = useState(false);
