@@ -1,7 +1,6 @@
 import axios from 'axios';
 
-import LocalStorageService from "../services/LocalStorageService";
-
+import LocalStorageService from "../services/LocalStorageService"
 import { Project, Task } from '../types/types';
 
 const localStorageService = LocalStorageService.getService();

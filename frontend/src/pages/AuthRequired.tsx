@@ -14,7 +14,7 @@ const AuthRequired = () => {
 
   return (
     <>
-        <div>{user}</div>
+        <div>User</div>
     </>
   )
 }
