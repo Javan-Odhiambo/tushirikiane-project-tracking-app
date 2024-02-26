@@ -29,6 +29,7 @@ const Header = () => {
               </a>
             </li>
             <li><a>Settings</a></li>
+            <li><Link to="login">Login</Link></li>
             <li><a>Logout</a></li>
           </ul>
         </div>
