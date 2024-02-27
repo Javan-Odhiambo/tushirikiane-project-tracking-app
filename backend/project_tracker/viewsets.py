@@ -44,15 +44,15 @@ class ProjectViewSet(viewsets.ModelViewSet):
         """Add/Get/Update members to a project."""
         project = self.get_object()
         if request.method == "POST":
-            response = add_members(project, request.data["members"], request)
-            return Response(response, status=status.HTTP_201_CREATED)
+            response, status = add_members(project, request.data["members"], request)
+            return Response(response, status=status)
         elif request.method == "PUT":
             print(request.data)
-            response = update_member(project, request.data, request)
-            return Response(response, status=status.HTTP_200_OK)
+            response, status = update_member(project, request.data, request)
+            return Response(response, status=status)
         else:
-            members = get_members(project, request)
-            return Response(members, status=status.HTTP_200_OK)
+            members, status = get_members(project, request)
+            return Response(members, status=status)
     
     @action(detail=True, methods=["POST"])
     def make_admin(self, request, pk=None, member_id=None):
@@ -66,19 +66,19 @@ class ProjectViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=["POST"])
     def leave_project(self, request, pk=None):
         """Leave project"""
-        response = leave_project(self.get_object(), request.user)
-        return Response(response, status=status.HTTP_204_NO_CONTENT)
+        response, status = leave_project(self.get_object(), request.user)
+        return Response(response, status=status)
 
     @action(detail=True, methods=["POST"])
     def archive_project(self, request, pk=None):
-        response = archive_project(self.get_object())
-        return Response(response, status=status.HTTP_200_OK)
+        response, status = archive_project(self.get_object())
+        return Response(response, status=status)
 
     @action(detail=True, methods=["POST"])
     def unarchive_project(self, request, pk=None):
         """Unarchive project"""
-        response = unarchive_project(self.get_object(), False)
-        return Response(response, status=status.HTTP_200_OK)
+        response, status = unarchive_project(self.get_object(), False)
+        return Response(response, status=status)
 
     @action(detail=True, methods=["GET", "POST"])
     def tasks(self, request, pk=None):
@@ -108,7 +108,7 @@ class TaskViewSet(viewsets.ModelViewSet):
     def mine(self, request):
         """Return tasks that the user is assigned to."""
         my_tasks = get_my_tasks(request.user, request)
-        return Response(my_tasks, status=status.HTTP_200_OK)
+        return Response(my_tasks, status=status)
 
     @action(
         detail=True,
@@ -137,7 +137,7 @@ class TaskViewSet(viewsets.ModelViewSet):
             requests, status = add_task_requests(task, request)
             return Response(requests, status=status)
         else:
-            response = delete_task_requests(request_id)
+            response, status = delete_task_requests(request_id)
             return Response(response, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=["POST"])
