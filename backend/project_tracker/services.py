@@ -185,13 +185,11 @@ def get_project_tasks(project, request):
 
 def add_project_task(project, request):
     """Add a task to a project."""
-    assignee_id = request.data.get("assignee", None)
-    if assignee_id:
+    member_id = request.data.get("assignee", None)
+    if member_id:
         try:
-            user = User.objects.get(id=assignee_id)
-            assignee = (
-                user if models.Member.objects.get(user=user, project=project) else None
-            )
+            member = models.Member.objects.get(pk=member_id, project=project)
+            assignee = member.user
         except Exception as e:
             return {"detail": "Assignee not found."}, status.HTTP_400_BAD_REQUEST
     else:
