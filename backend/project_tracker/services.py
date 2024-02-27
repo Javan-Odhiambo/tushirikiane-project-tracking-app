@@ -153,12 +153,13 @@ def unarchive_project(project, request):
 
 def approve_request(request_id, request):
     """Approve task request"""
-    print(request.user.id)
+    user_id = request.user.id
+    print(user_id)
     with transaction.atomic():
         member = get_object_or_404(models.Member, pk=request.data["member_id"])
         request = get_object_or_404(models.Request, pk=request_id)
         task = get_object_or_404(models.Task, pk=request.task.id)
-        task.assignor = User.objects.get(id=request.user.id)
+        task.assignor = User.objects.get(pk=user_id)
         task.assignee = member.user
         task.status = "in_progress"
         request.status = "approved"
