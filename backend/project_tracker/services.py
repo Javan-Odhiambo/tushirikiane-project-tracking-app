@@ -43,12 +43,12 @@ def add_members(project, new_members, request):
                     user=user, project=project, is_admin=False, is_owner=False
                 )
         except User.DoesNotExist:
-            return {"detail": f"User {email} does not exist."}
+            return {"detail": f"User {email} does not exist."}, status.HTTP_400_BAD_REQUEST
     members = models.Member.objects.filter(project=project)
     serializer = serializers.MemberSerializer(
         members, many=True, context={"request": request}
     )
-    return serializer.data
+    return serializer.data, status.HTTP_201_CREATED
 
 
 def update_member(project, member_data, request):
@@ -60,8 +60,8 @@ def update_member(project, member_data, request):
         member.is_admin = member_data["is_admin"]
         member.save()
     except User.DoesNotExist:
-        return {"detail": f"User {user} does not exist."}
-    return {"detail": "Member updated successfully."}
+        return {"detail": f"User {user} does not exist."}, status.HTTP_400_BAD_REQUEST
+    return {"detail": "Member updated successfully."}, status.HTTP_200_OK
 
 
 def delete_member(project, member_data, request):
@@ -71,8 +71,8 @@ def delete_member(project, member_data, request):
         user = User.objects.get(email=email)
         # remove member logic
     except User.DoesNotExist:
-        return {"detail": f"User {user} does not exist."}
-    return {"detail": "Member deleted successfully."}
+        return {"detail": f"User {user} does not exist."}, status.HTTP_400_BAD_REQUEST
+    return {"detail": "Member deleted successfully."}, status.HTTP_204_NO_CONTENT
 
 
 def get_members(project, request):
@@ -81,7 +81,7 @@ def get_members(project, request):
     serializer = serializers.MemberSerializer(
         members, many=True, context={"request": request}
     )
-    return serializer.data
+    return serializer.data, status.HTTP_200_OK
 
 
 def get_tasks(project, request):
@@ -90,7 +90,7 @@ def get_tasks(project, request):
     serializer = serializers.TaskSerializer(
         tasks, many=True, context={"request": request}
     )
-    return serializer.data
+    return serializer.data, status.HTTP_200_OK
 
 
 def get_requests(task, request):
@@ -134,21 +134,21 @@ def delete_task_requests(request_id):
     """Delete task requests."""
     request = models.Request.objects.get(pk=request_id)
     request.delete()
-    return {"detail": "Request has been deleted."}
+    return {"detail": "Request has been deleted."}, status.HTTP_204_NO_CONTENT
 
 
 def archive_project(project):
     """Archive a project."""
     project.is_active = False
     project.save()
-    return {"detail": "Project has been archived."}
+    return {"detail": "Project has been archived."}, status.HTTP_200_OK
 
 
 def unarchive_project(project, request):
     """Unarchive a project."""
     project.is_active = True
     project.save()
-    return {"detail": "Project has been unarchived."}
+    return {"detail": "Project has been unarchived."}, status.HTTP_200_OK
 
 
 def approve_request(request_id, request):
@@ -171,7 +171,7 @@ def approve_request(request_id, request):
 def leave_project(project, user):
     """Leave a project."""
     project.members.remove(user)
-    return {"detail": "Member has left the project."}
+    return {"detail": "Member has left the project."}, status.HTTP_204_NO_CONTENT
 
 
 def get_project_tasks(project, request):
@@ -180,7 +180,7 @@ def get_project_tasks(project, request):
     serializer = serializers.TaskSerializer(
         tasks, many=True, context={"request": request}
     )
-    return serializer.data
+    return serializer.data, status.HTTP_200_OK
 
 
 def add_project_task(project, request):

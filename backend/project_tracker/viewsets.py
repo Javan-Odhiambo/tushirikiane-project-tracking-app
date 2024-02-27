@@ -53,6 +53,15 @@ class ProjectViewSet(viewsets.ModelViewSet):
         else:
             members = get_members(project, request)
             return Response(members, status=status.HTTP_200_OK)
+    
+    @action(detail=True, methods=["POST"])
+    def make_admin(self, request, pk=None, member_id=None):
+        """Make member an admin"""
+        ...
+
+    @action(detail=True, methods=["POST"])
+    def remove_admin(self, request, pk=None, member_id=None):
+        ...
 
     @action(detail=True, methods=["POST"])
     def leave_project(self, request, pk=None):
@@ -75,8 +84,8 @@ class ProjectViewSet(viewsets.ModelViewSet):
     def tasks(self, request, pk=None):
         project = self.get_object()
         if request.method == "GET":
-            tasks = get_project_tasks(project, request)
-            return Response(tasks, status=status.HTTP_200_OK)
+            tasks, status = get_project_tasks(project, request)
+            return Response(tasks, status=status)
         elif request.method == "POST":
             response, status = add_project_task(project, request)
             return Response(response, status=status)
@@ -136,3 +145,8 @@ class TaskViewSet(viewsets.ModelViewSet):
         """Approve request"""
         response, status = approve_request(request_id, request)
         return Response(response, status=status)
+    
+    @action(detail=True, methods=["POST"])
+    def reject_request(self, request, pk=None, request_id=None):
+        """Reject request"""
+        ...
