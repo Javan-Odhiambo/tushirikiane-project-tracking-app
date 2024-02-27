@@ -9,9 +9,11 @@ pip install -r requirements.txt
 python manage.py collectstatic --no-input
 
 # Apply any outstanding database migrations
+python manage.py makemigrations
 python manage.py makemigrations accounts
 python manage.py makemigrations project_tracker
 
+python manage.py migrate
 python manage.py migrate accounts
 python manage.py migrate project_tracker
 
