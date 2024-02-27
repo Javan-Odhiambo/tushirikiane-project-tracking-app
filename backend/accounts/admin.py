@@ -16,3 +16,5 @@ class UserAdmin(UserAdmin):
         "created_at",
         "updated_at",
     )
+
+    ordering = ("email",)
