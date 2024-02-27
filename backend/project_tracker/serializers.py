@@ -1,8 +1,7 @@
-from django.contrib.auth import get_user_model
-from rest_framework import serializers
-
 from accounts.serializers import CustomUserSerializer
+from django.contrib.auth import get_user_model
 from project_tracker import models
+from rest_framework import serializers
 
 
 class MemberSerializer(serializers.ModelSerializer):
@@ -74,6 +73,7 @@ class TaskSerializer(serializers.ModelSerializer):
         print(validated_data)
         task = models.Task.objects.create(**validated_data)
         return task
+
 
 class TaskRequestSerializer(serializers.ModelSerializer):
     member = CustomUserSerializer(read_only=True)

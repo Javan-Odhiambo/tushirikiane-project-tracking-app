@@ -1,7 +1,6 @@
-from rest_framework.routers import DefaultRouter
 from django.urls import path
-
 from project_tracker import viewsets
+from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
 
