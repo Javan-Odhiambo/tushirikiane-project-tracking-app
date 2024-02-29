@@ -13,6 +13,7 @@ from project_tracker.services import (
     get_request,
     get_requests,
     leave_project,
+    remove_member,
     unarchive_project,
     update_member,
 )
@@ -58,8 +59,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
         ...
 
     @action(detail=True, methods=["POST"])
-    def remove_admin(self, request, pk=None, member_id=None):
-        ...
+    def remove_admin(self, request, pk=None, member_id=None): ...
 
     @action(detail=True, methods=["POST"])
     def leave_project(self, request, pk=None):
@@ -90,7 +90,9 @@ class ProjectViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=["DELETE"])
     def remove_member(self, request, pk=None, member_id=None):
-        ...
+        project = self.get_object()
+        response, status = remove_member(project, request)
+        return Response(response, status=status)
 
 
 class TaskViewSet(viewsets.ModelViewSet):

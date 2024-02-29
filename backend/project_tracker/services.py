@@ -221,3 +221,13 @@ def get_my_tasks(user, request):
         tasks, many=True, context={"request": request}
     )
     return serializer.data
+
+
+def remove_member(project, request):
+    """ Remove member from project"""
+    member_id = request.data.get("member_id", None)
+    if not member_id:
+        return {"detail": "Member ID is required."}, status.HTTP_400_BAD_REQUEST
+    member = models.Member.objects.get(pk=member_id, project=project)
+    member.delete()
+    return {"detail": "Member has been removed."}, status.HTTP_204_NO_CONTENT
