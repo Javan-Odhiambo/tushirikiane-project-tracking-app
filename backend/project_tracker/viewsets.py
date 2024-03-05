@@ -1,9 +1,3 @@
-from rest_framework import status, viewsets
-from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from rest_framework import views
-
 from accounts.authentication import CustomJWTAuthentication
 from project_tracker import models, serializers
 from project_tracker.services import (
@@ -22,6 +16,10 @@ from project_tracker.services import (
     unarchive_project,
     update_member,
 )
+from rest_framework import status, views, viewsets
+from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
 
 class ProjectViewSet(viewsets.ModelViewSet):
@@ -53,7 +51,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
         else:
             members, status = get_members(project, request)
             return Response(members, status=status)
-    
+
     @action(detail=True, methods=["POST"])
     def make_admin(self, request, pk=None, member_id=None):
         """Make member an admin"""
@@ -91,7 +89,8 @@ class ProjectViewSet(viewsets.ModelViewSet):
             return Response(response, status=status)
 
     @action(detail=True, methods=["DELETE"])
-    def remove_member(self, request, pk=None, member_id=None): ...
+    def remove_member(self, request, pk=None, member_id=None):
+        ...
 
 
 class TaskViewSet(viewsets.ModelViewSet):
@@ -145,7 +144,7 @@ class TaskViewSet(viewsets.ModelViewSet):
         """Approve request"""
         response, status = approve_request(request_id, request)
         return Response(response, status=status)
-    
+
     @action(detail=True, methods=["POST"])
     def reject_request(self, request, pk=None, request_id=None):
         """Reject request"""

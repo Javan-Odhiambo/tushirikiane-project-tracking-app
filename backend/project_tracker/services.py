@@ -1,12 +1,11 @@
 from datetime import datetime, timezone
-from django.http import HttpRequest
-from django.shortcuts import get_object_or_404
-from rest_framework import status
-from django.db import transaction
 
 from django.contrib.auth import get_user_model
-
+from django.db import transaction
+from django.http import HttpRequest
+from django.shortcuts import get_object_or_404
 from project_tracker import models, serializers
+from rest_framework import status
 
 User = get_user_model()
 
@@ -43,7 +42,9 @@ def add_members(project, new_members, request):
                     user=user, project=project, is_admin=False, is_owner=False
                 )
         except User.DoesNotExist:
-            return {"detail": f"User {email} does not exist."}, status.HTTP_400_BAD_REQUEST
+            return {
+                "detail": f"User {email} does not exist."
+            }, status.HTTP_400_BAD_REQUEST
     members = models.Member.objects.filter(project=project)
     serializer = serializers.MemberSerializer(
         members, many=True, context={"request": request}

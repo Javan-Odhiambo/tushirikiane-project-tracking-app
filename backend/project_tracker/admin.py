@@ -1,5 +1,4 @@
 from django.contrib import admin
-
 from project_tracker.models import Member, Project, Request, Task
 
 # Register your models here.
