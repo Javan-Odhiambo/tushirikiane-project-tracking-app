@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
 
-import { getProjectTasks } from '../../api/api';
+import { getProjectTasks } from '../api/api';
 
-import { Task } from '../../types/types';
-import { capitalize, formatFullDateTime } from '../../utils/utils';
+import { Task } from '../types/types';
+import { capitalize, formatFullDateTime } from '../utils/utils';
 
 type TaskContainerProps = {
     projectId: string
@@ -129,24 +129,24 @@ const TaskContainer = ({ projectId }: TaskContainerProps) => {
                                                 <div className="flex items-center space-x-3">
                                                     {
                                                         task.assignee ?
-                                                        <>
-                                                        {/* TODO: Change to Avatar */}
-                                                        <div className="avatar placeholder">
-                                                            <div className="bg-neutral text-neutral-content rounded-full w-10">
-                                                                <span className="text-2xl font-bold">
-                                                                    {capitalize(task.assignee?.first_name[0])}
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                        <p className=" font-semibold">{capitalize(task.assignee?.first_name)} {capitalize(task.assignee?.last_name)}</p>
-                                                        </>
-                                                        :
-                                                        <p className=" font-semibold">Unassigned</p>
+                                                            <>
+                                                                {/* TODO: Change to Avatar */}
+                                                                <div className="avatar placeholder">
+                                                                    <div className="bg-neutral text-neutral-content rounded-full w-10">
+                                                                        <span className="text-2xl font-bold">
+                                                                            {capitalize(task.assignee?.first_name[0])}
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                                <p className=" font-semibold">{capitalize(task.assignee?.first_name)} {capitalize(task.assignee?.last_name)}</p>
+                                                            </>
+                                                            :
+                                                            <p className=" font-semibold">Unassigned</p>
                                                     }
                                                 </div>
                                                 <div className="flex flex-col items-center">
-                                                    <p>Start: {task.start_at ? formatFullDateTime(task.start_at): "--"}</p>
-                                                    <p>Due: {task.due_at? formatFullDateTime(task.due_at): "--"}</p>
+                                                    <p>Start: {task.start_at ? formatFullDateTime(task.start_at) : "--"}</p>
+                                                    <p>Due: {task.due_at ? formatFullDateTime(task.due_at) : "--"}</p>
                                                 </div>
                                             </div>
                                         </div>

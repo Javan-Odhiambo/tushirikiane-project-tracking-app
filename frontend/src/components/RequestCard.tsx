@@ -1,6 +1,6 @@
 import React from 'react'
-import { TaskRequest } from '../../types/types'
-import { capitalize } from '../../utils/utils'
+import { TaskRequest } from '../types/types'
+import { capitalize } from '../utils/utils'
 
 type RequestCardProps = {
     taskRequest: TaskRequest

@@ -5,15 +5,15 @@ import MembersModal from '../components/MembersModal';
 import AddTaskModal from '../components/AddTaskModal';
 import AddMemberModal from '../components/AddMemberModal';
 
-import { archiveProject, getMembers, getProject, leaveProject } from '../../api/api';
+import { archiveProject, getMembers, getProject, leaveProject } from '../api/api';
 import TaskContainer from '../components/TaskContainer';
-import { Member, Project } from '../../types/types';
+import { Member, Project } from '../types/types';
 import ViewRequestsModal from '../components/ViewRequestsModal';
+import { useGetProjectByIdQuery, useArchiveProjectMutation, useLeaveProjectMutation, useGetMembersListQuery, useUnarchiveProjectMutation } from '../redux/features/projects/projectsApiSlice';
+import { toast } from 'react-toastify';
 
 // TODO: Change styling
 
-//TODO: Mock Data for testing
-//TODO: Fix tasks tab
 //TODO: Fix modals
 
 interface RouteParams {
@@ -23,40 +23,40 @@ interface RouteParams {
 
 const ProjectDetail: React.FC = () => {
     const { projectId } = useParams<RouteParams>();
-    const [project, setProject] = useState<Project | null>(null);
-    const [members, setMembers] = useState<Member[] | undefined>(undefined);
+    // const [project, setProject] = useState<Project | null>(null);
+    // const [members, setMembers] = useState<Member[] | undefined>(undefined);
 
     const [showMembers, setShowMembers] = useState(false);
     const [showAddTask, setShowAddTask] = useState(false);
     const [showAddMember, setShowAddMember] = useState(false);
     const [showViewRequests, setShowViewRequests] = useState(false);
 
-    useEffect(() => {
-        getProject(projectId)
-            .then(project => {
-                setProject(project);
-                // TODO: Remove console.log
-                console.log(project);
-            })
-            .catch(err => {
-                console.log(err);
-            });
+    const { data: project } = useGetProjectByIdQuery(projectId);
+    const { data: members } = useGetMembersListQuery(projectId);
 
-        getMembers(projectId)
-            .then(members => {
-                setMembers(members)
-            })
-            .catch(err => {
-                console.log(err);
-            });
+    const [leaveProject, { isLoading: LoadLeaving }] = useLeaveProjectMutation(projectId);
+    const [archiveProject, { isLoading: LoadingArchiving }] = useArchiveProjectMutation(projectId);
+    const [unarchiveProject,{ isLoading: LoadingUnarchiviing }] = useUnarchiveProjectMutation(projectId);
 
-    }, []);
 
     const handleArchive = (project: Project) => {
         // TODO:Add confirmation modal
+
         archiveProject(String(project.id))
             .then(() => {
-                setProject({ ...project, is_active: false })
+                toast.success('Project archived successfully')
+            })
+            .catch(err => {
+                console.log(err)
+            })
+    }
+
+    const handleUnarchive = (project: Project) => {
+        // TODO:Add confirmation modal
+
+        unarchiveProject(String(project.id))
+            .then(() => {
+                toast.success('Project unarchived successfully')
             })
             .catch(err => {
                 console.log(err)
@@ -65,12 +65,12 @@ const ProjectDetail: React.FC = () => {
 
     const handleLeaveProject = (project: Project) => {
         leaveProject(String(project.id))
-        .then(() => {
-            console.log('Left project')
-        })
-        .catch(err => {
-            console.log(err)
-        })
+            .then(() => {
+                console.log('Left project')
+            })
+            .catch(err => {
+                console.log(err)
+            })
     }
 
     return (
@@ -140,9 +140,16 @@ const ProjectDetail: React.FC = () => {
                                     {/* <!-- Admins only end --> */}
 
                                     {/* TODO: <!-- Owner start --> */}
-                                    <li className="cursor-pointer px-5 py-2  hover:bg-yellow-300 rounded-lg" onClick={() => handleArchive(project)}>
-                                        Archive Project
-                                    </li>
+                                    { project.is_active ?
+                                        <li className="cursor-pointer px-5 py-2  hover:bg-yellow-300 rounded-lg" onClick={() => handleArchive(project)}>
+                                            Archive Project
+                                        </li>
+                                        :
+                                        <li className="cursor-pointer px-5 py-2  hover:bg-green-300 rounded-lg" onClick={() => handleUnarchive(project.id)}>
+                                            Unarchive Project
+                                        </li>
+
+                                    }
                                     {/* <!-- Owner end --> */}
                                 </ul>
                             </div>

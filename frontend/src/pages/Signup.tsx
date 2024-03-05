@@ -1,10 +1,17 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import { Link } from 'react-router-dom'
+import { useSignupMutation } from '../redux/features/auth/authApiSlice'
+import {toast} from 'react-toastify'
+import { useNavigate } from 'react-router-dom'
 
 // TODO: Change styling
 
 
 const Signup: React.FC = () => {
+    const [signup, {isLoading}] = useSignupMutation()
+    const navigate = useNavigate()
+
+
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [firstName, setFirstName] = useState('')
@@ -12,9 +19,10 @@ const Signup: React.FC = () => {
     const [confirmPassword, setConfirmPassword] = useState('')
     const [profilePic, setProfilePic] = useState('') //TODO: Move this to a different step
     const [errorMessages, setErrorMessages] = useState<String[]>([]);
+    const [submit, setSubmit] = useState(false)
 
     function handleSignup(e: React.FormEvent<HTMLFormElement>) {
-        e.preventDefault()
+        e.preventDefault();
         if (password !== confirmPassword) {
             if (!errorMessages.includes('Passwords do not match')) {
               setErrorMessages([...errorMessages, 'Passwords do not match']);
@@ -25,12 +33,22 @@ const Signup: React.FC = () => {
         }
 
         // TODO: Implement sigup logic
+        signup({email, password, re_password: confirmPassword, first_name: firstName, last_name: lastName})
+        .unwrap()
+        .then((data) => {
+            toast.success('Account created successfully')
+            navigate('/login')
+            console.log(data)
+        })
+        .catch((error) => {
+            toast.error('Error creating account')
+        })
         console.log('signup')
     }
 
     return (
         <div className='w-[100vw] h-[100vh]'>
-            <form action="/login" method='post' className='min-h-screen sm:flex sm:flex-row mx-0 justify-center' onSubmit={handleSignup}>
+            <form className='min-h-screen sm:flex sm:flex-row mx-0 justify-center' onSubmit={handleSignup}>
                 <div className="flex justify-center self-center  z-10">
                     <div className="p-12 bg-white mx-auto rounded-2xl w-100 ">
                         <div className="mb-4">

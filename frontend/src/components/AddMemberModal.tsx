@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
-import { Member } from '../../types/types'
+import { Member } from '../types/types'
 import Input from './Input'
 import EmailDisplay from './EmailDisplay'
-import { addMembers } from '../../api/api'
+import { addMembers } from '../api/api'
 
 type AddMemberModalProps = {
     setShowAddMember: Function

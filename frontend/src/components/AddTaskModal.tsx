@@ -1,9 +1,9 @@
 import React, { useState, useEffect, MouseEventHandler } from 'react'
 
 import Input from './Input'
-import { Member } from '../../types/types'
-import { capitalize } from '../../utils/utils'
-import { createTask } from '../../api/api'
+import { Member } from '../types/types'
+import { capitalize } from '../utils/utils'
+import { createTask } from '../api/api'
 
 type AddTaskModalProps = {
     setShowAddTask: Function
@@ -81,7 +81,7 @@ const AddTaskModal = ({ setShowAddTask, projectId, members }: AddTaskModalProps)
                         <div className="text-left space-y-1">
                             <label htmlFor="assignee">Assingee: </label>
                             <select className="border border-gray-400 rounded-full w-full pl-2 py-1 focus:outline-indigo-400"
-                                name="assignee" id="assignee" placeholder='Select'>
+                                name="assignee" id="assignee">
                                 {members?.map((member: Member, index: number) => (
                                     <option key={index} value={member.email}>{capitalize(member.user.first_name)} {capitalize(member.user.last_name)}</option>
                                 ))}

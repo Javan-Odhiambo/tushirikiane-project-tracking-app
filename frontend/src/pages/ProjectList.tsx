@@ -2,23 +2,16 @@ import React, { useEffect, useState } from 'react'
 import Header from '../components/Header'
 import { Link } from 'react-router-dom'
 import ProjectCard from '../components/ProjectCard'
-import { getProjects } from '../../api/api'
-import { Project } from '../../types/types'
+import { useGetProjectsListQuery } from '../redux/features/projects/projectsApiSlice'
+
+// import { getProjects } from '../api/api'
+import { Project } from '../types/types'
 
 const ProjectList: React.FC = () => {
 
-    const [projects, setProjects] = useState<Project[]>([]);
+    const {data : projects, isLoading } = useGetProjectsListQuery()
+    // const [projects, setProjects] = useState<Project[]>([]);
 
-    useEffect(() => {
-        getProjects()
-            .then(projects => {
-                setProjects(projects);
-                console.log(projects);
-            })
-            .catch(err => {
-                console.log(err);
-            });
-    }, [])
 
     return (
         <>
@@ -30,7 +23,7 @@ const ProjectList: React.FC = () => {
                     <section className="border border-indigo-200 rounded-md shadow mx-4">
                         {/* <!-----Projects container-------> */}
                         <div className="">
-                            {projects && projects.map(project => (
+                            {projects && projects.map((project: Project) => (
                                 <ProjectCard key={project.id} project={project} />
                             ))}
 

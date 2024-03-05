@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { TaskRequest } from '../../types/types'
-import { getTaskRequests } from '../../api/api'
+import { TaskRequest } from '../types/types'
+import { getTaskRequests } from '../api/api'
 import RequestCard from './RequestCard'
 
 type ViewRequestsModalProps = {

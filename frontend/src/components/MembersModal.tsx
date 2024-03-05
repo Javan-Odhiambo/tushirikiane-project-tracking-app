@@ -1,8 +1,7 @@
 import React, { MouseEventHandler, useState, useEffect } from 'react'
 
-import { getMembers } from './../../api/api'
 
-import { Member } from './../../types/types'
+import { Member } from './../types/types'
 import MemberCard from './MemberCard'
 
 type MembersModalProps = {

@@ -1,33 +1,36 @@
 import React, { useState } from 'react'
 import { Link, redirect } from 'react-router-dom'
+import { useLoginMutation } from '../redux/features/auth/authApiSlice'
+import { useNavigate } from 'react-router-dom'
+import {toast} from 'react-toastify'
+import { useDispatch } from 'react-redux'
+import { setAuth } from '../redux/features/auth/authSlice'
 
-import { login, me } from './../../api/api'
-import { useUser } from '../../context/UserContext'
 
 // TODO: Change styling
 const Login: React.FC = () => {
+    const [login, { isLoading }] = useLoginMutation()
+    const navigate = useNavigate()
+    const dispatch = useDispatch()
+
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-    const {user, setUser} = useUser()
 
     const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
 
+        console.log("Logging in ....")
         login({ email, password })
-            .then(res => {
-                me()
-                .then( data => {
-                    console.log(data)
-                    setUser(data)
-                })
-                .catch(error =>{
-                    console.log(error)
-                })
-                console.log(res)
-            })
-            .catch(err => {
-                console.log(err)
-            })
+        .unwrap()
+        .then((data) => {
+            toast.success('Logged in successfully')
+            dispatch(setAuth())
+            navigate('/projects')
+            console.log(data)
+        })
+        .catch((error) => {
+            console.log(error)
+        })
 
     }
     return (
@@ -48,7 +51,7 @@ const Login: React.FC = () => {
                                 <label className="mb-5 text-sm font-medium text-gray-700 tracking-wide">
                                     Password
                                 </label>
-                                <input className="w-full content-center text-base px-4 py-2 border  border-gray-300 rounded-lg focus:outline-none focus:border-primary-400" type="password" placeholder="Enter your password" id="email" value={password} onChange={(e) => setPassword(e.target.value)} />
+                                <input className="w-full content-center text-base px-4 py-2 border  border-gray-300 rounded-lg focus:outline-none focus:border-primary-400" type="password" placeholder="Enter your password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} />
                             </div>
                             <div className="text-sm">
                                 < Link to="/signup" className="text-primary-400 hover:text-primary-500">

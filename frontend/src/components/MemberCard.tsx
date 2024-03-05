@@ -1,10 +1,9 @@
 import React, { useState } from 'react'
 
-import { Member } from './../../types/types'
+import { Member } from './../types/types'
 
-import { useUser } from './../../context/UserContext'
 
-import { capitalize } from './../../utils/utils'
+import { capitalize } from '../utils/utils'
 
 type MemberCardProps = {
     member: Member,
@@ -14,8 +13,6 @@ type MemberCardProps = {
 const MemberCard = ({ member }: MemberCardProps) => {
 
     const [showMenu, setShowMenu] = useState(false);
-    const { user, setUser } = useUser();
-
 
     return (
         <div className="flex justify-between items-center hover:bg-gray-300 hover:bg-opacity-70 p-3 rounded-xl">
@@ -51,7 +48,7 @@ const MemberCard = ({ member }: MemberCardProps) => {
 
                             {/* TODO: Change the logic to check if the logged in user is owner */}
                             {true &&
-                            //  && member.user.email === user.email && member.is_owner &&
+                                //  && member.user.email === user.email && member.is_owner &&
                                 <>
                                     <a href="">
                                         <p
