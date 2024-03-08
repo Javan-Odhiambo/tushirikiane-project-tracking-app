@@ -93,6 +93,17 @@ class ProjectViewSet(viewsets.ModelViewSet):
         project = self.get_object()
         response, status = remove_member(project, request)
         return Response(response, status=status)
+    
+    @action(detail=True, methods=["GET"])
+    def tasks_requests(self, request, pk=None):
+        """Get tasks requests"""
+        project = self.get_object()
+        tasks = models.Task.objects.filter(project=project)
+        requests = models.Request.objects.filter(task__in=tasks)
+        serializer = serializers.RequestSerializer(
+            requests, many=True, context={"request": request}
+        )
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class TaskViewSet(viewsets.ModelViewSet):
