@@ -17,6 +17,7 @@
     "jsx": "react-jsx",
   },
   "include": ["src"],
+  "types": ["webpack-env", "vite/client"],
   "references": [{ "path": "./tsconfig.node.json" }],
   "baseUrl": ".",
   "paths": {
