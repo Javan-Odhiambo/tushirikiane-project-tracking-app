@@ -161,4 +161,5 @@ class TaskViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=["POST"])
     def reject_request(self, request, pk=None, request_id=None):
         """Reject request"""
-        ...
+        response, status = reject_request(request_id, request)
+        return Response(response, status=status)

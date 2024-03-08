@@ -163,11 +163,20 @@ def approve_request(request_id, request):
         task.assignor = User.objects.get(pk=user_id)
         task.assignee = member.user
         task.status = "in_progress"
-        request.status = "approved"
+        request.status = "accepted"
         task.save()
         request.save()
         return {"detail": "Request has been approved."}, status.HTTP_200_OK
     return {"detail": "Request could not be approved."}, status.HTTP_400_BAD_REQUEST
+
+def reject_request(request_id, request):
+    """Reject task request"""
+    with transaction.atomic():
+        request = get_object_or_404(models.Request, pk=request_id)
+        request.status = "declined"
+        request.save()
+        return {"detail": "Request has been rejected."}, status.HTTP_200_OK
+    return {"detail": "Request could not be rejected."}, status.HTTP_400_BAD_REQUEST
 
 
 def leave_project(project, user):
