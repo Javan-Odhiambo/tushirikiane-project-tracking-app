@@ -105,7 +105,7 @@ const projectApiSlice = apiSlice.injectEndpoints({
         }),
         getRequestList: builder.query<Request[], (string | undefined)>({
             query: (id) => ({
-                url: `/projects/${id}/requests/`,
+                url: `/projects/${id}/task_requests/`,
             })
         }),
 

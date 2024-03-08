@@ -2,10 +2,13 @@ import React from 'react'
 import Header from '../components/Header'
 import Footer from '../components/Footer';
 
-const task = require('./../assets/tasks.jpg')
-const project = require('./../assets/project.jpg')  
-const team = require('./../assets/team.jpg')    
+// import task from '';
+// import project from ;  
+// import team from ;    
 
+const task = require("./../assets/tasks.jpg")
+const project = require('./../assets/project.jpg')
+const team = require('./../assets/team.jpg')
 
 //TODO: Add mockups using the daisy ui art board
 //TODO: Get a hero section image
