@@ -2,7 +2,8 @@ import React, { useState } from 'react'
 import { Member } from '../types/types'
 import Input from './Input'
 import EmailDisplay from './EmailDisplay'
-import { addMembers } from '../api/api'
+import { useCreateMemberMutation } from '../redux/features/projects/projectsApiSlice'
+import { toast } from 'react-toastify'
 
 type AddMemberModalProps = {
     setShowAddMember: Function
@@ -14,6 +15,8 @@ const AddMemberModal = ({ setShowAddMember, projectId, members }: AddMemberModal
 
     const [emails, setEmails] = useState<string[]>([])
     const [email, setEmail] = useState<string>('')
+
+    const [addMembers, {isError, isSuccess}] = useCreateMemberMutation()
 
     const closeAddMemberModal = (e: React.MouseEvent) => {
         e.preventDefault()
@@ -31,15 +34,24 @@ const AddMemberModal = ({ setShowAddMember, projectId, members }: AddMemberModal
 
     const handleSubmission = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault()
-        addMembers(emails, projectId)
-            .then(res => {
-                setEmails([])
-                setShowAddMember(false)
-            })
-            .catch(err => {
-                console.log(err)
-            })
-        console.log(emails)
+
+        const payload = {
+            id: projectId,
+            emails: emails.join(", ")
+        }
+        addMembers(payload)
+        .unwrap()
+        .then((data) => {
+            console.log(data)
+            toast.success('Members added successfully')
+            setEmails([])
+            setShowAddMember(false)
+        })
+        .catch((error) => {
+            toast.error('An error occured')
+            console.log(error)
+        })
+
     }
 
 

@@ -3,17 +3,17 @@ import authReducer from "./features/auth/authSlice";
 import tasksReducer from "./features/tasks/tasksSlice";
 import projectsReducer from "./features/projects/projectsSlice";
 import { apiSlice } from "./services/apiSlice";
-// import {
+import {
 //   FLUSH,
-//   REHYDRATE,
+  REHYDRATE,
 //   PAUSE,
 //   PERSIST,
 //   PURGE,
 //   REGISTER,
-//   persistReducer,
-//   persistStore,
-// } from "redux-persist";
-// import storage from "./storage";
+  persistReducer,
+  persistStore,
+} from "redux-persist";
+import storage from "./storage";
 import { setupListeners } from "@reduxjs/toolkit/query";
 
 const rootReducer = combineReducers({
@@ -23,17 +23,17 @@ const rootReducer = combineReducers({
   projects: projectsReducer,
 });
 
-// const persistConfig = {
-//   key: "root",
-//   storage,
-//   whitelist: ["auth"],
-// };
+const persistConfig = {
+  key: "root",
+  storage,
+  whitelist: ["auth"],
+};
 
-// const persistedReducer = persistReducer(persistConfig, rootReducer);
+const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 const makeStore = () =>
   configureStore({
-    reducer: rootReducer, // persistedReducer,
+    reducer: persistedReducer,
     devTools: process.env.NODE_ENV !== "production",
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware().concat(apiSlice.middleware),
@@ -41,10 +41,10 @@ const makeStore = () =>
 
 export const store = makeStore();
 setupListeners(store.dispatch);
-// export const persistor = persistStore(store);
-// export const purgeData = async () => {
-//   await persistor.purge();
-// };
+export const persistor = persistStore(store);
+export const purgeData = async () => {
+  await persistor.purge();
+};
 export type AppStore = ReturnType<typeof makeStore>;
 export type RootState = ReturnType<AppStore["getState"]>;
 export type AppDispatch = AppStore["dispatch"];

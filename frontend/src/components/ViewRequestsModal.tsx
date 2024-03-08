@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { TaskRequest } from '../types/types'
-import { getTaskRequests } from '../api/api'
 import RequestCard from './RequestCard'
+import { useGetRequestListQuery } from '../redux/features/projects/projectsApiSlice'
 
 type ViewRequestsModalProps = {
     setShowViewRequests: Function
@@ -9,25 +9,12 @@ type ViewRequestsModalProps = {
 }
 const ViewRequestsModal = ({ setShowViewRequests, projectId }: ViewRequestsModalProps) => {
 
-    const [taskRequests, setTaskRequests] = useState<TaskRequest[]>([])
-
+    const {data: taskRequests} = useGetRequestListQuery(projectId)
+    console.log(taskRequests)
     const closeViewRequestsModal = (e: React.MouseEvent) => {
         e.preventDefault()
         setShowViewRequests(false)
     }
-
-    useEffect(() => {
-        // Fetch project requests
-        getTaskRequests(projectId)
-            .then(requests => {
-                setTaskRequests(requests)
-            })
-            .catch(err => {
-                console.log(err)
-            })
-    }, [])
-
-
 
     return (
         <>
@@ -41,13 +28,11 @@ const ViewRequestsModal = ({ setShowViewRequests, projectId }: ViewRequestsModal
                 </span>
                 <div>
                     <h4 className="text-lg font-semibold">Requests</h4>
-                    <div className="overflow-y-scroll max-h-[500px]">
-                        {/* TODO: Change to loop */}
-                        {taskRequests[0] ? <RequestCard taskRequest={taskRequests[0]}/> : <></>}
-                        {/* <RequestCard taskRequest={taskRequests[0]}/> */}
-                        {/* <RequestCard taskRequest={taskRequests[0]}/> */}
-
-                    </div>
+                    {/* <div className="overflow-y-scroll max-h-[500px]">
+                        {taskRequests &&
+                        taskRequests.map((request, index) => <RequestCard key={index} taskRequest={request}/> ) }
+            
+                    </div> */}
                 </div>
 
             </div>

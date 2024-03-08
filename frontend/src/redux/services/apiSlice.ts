@@ -8,11 +8,11 @@ import type {
 import { setAuth, logout } from '../features/auth/authSlice'
 import { Mutex } from 'async-mutex'
 
-process.env.BACKEND_URL = process.env.BACKEND_URL || "http://localhost:8000"
-const mutex = new Mutex()
+// process.env.BACKEND_URL = process.env.BACKEND_URL
 
+const mutex = new Mutex()
 const baseQuery = fetchBaseQuery({
-    baseUrl: `${process.env.BACKEND_URL}`,
+    baseUrl: `${import.meta.env.BACKEND_URL}`,
     credentials: "include"
 })
 
@@ -55,6 +55,7 @@ const baseQueryWithReauth: BaseQueryFn<
 export const apiSlice = createApi({
     reducerPath: "api",
     baseQuery: baseQueryWithReauth,
+    tagTypes: ["Project", "Members", "Projects", "Tasks", "Requests"],
     endpoints: builder => ({
     })
 })

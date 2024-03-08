@@ -18,13 +18,13 @@ const taskApiSlice = apiSlice.injectEndpoints({
         getTaskById: builder.query<Task, (string | undefined)>({
             query: (id) => `/tasks/${id}/`
         }),
-        createTask: builder.mutation({
-            query: (task) => ({
-                url: "/tasks/",
-                method: "POST",
-                body: task,
-            })
-        }),
+        // createTask: builder.mutation({
+        //     query: ({projectID, task}: {projectID:string, task: Task}) => ({
+        //         url: `/projects/${projectID}/tasks/`,
+        //         method: "POST",
+        //         body: task,
+        //     })
+        // }),
         updateTask: builder.mutation({
             query: ({ id, task }: {id:string, task: Task}) => ({
                 url: `/tasks/${id}/`,
@@ -39,8 +39,8 @@ const taskApiSlice = apiSlice.injectEndpoints({
             })
         }),
         approveTask: builder.mutation({
-            query: (id) => ({
-                url: `/tasks/${id}/approve_request/`,
+            query: ({taskID, requestID}) => ({
+                url: `/tasks/${taskID}/request/${requestID}/approve/`,
                 method: "POST",
             })
         }),
@@ -55,19 +55,26 @@ const taskApiSlice = apiSlice.injectEndpoints({
                 url: `/tasks/${id}/requests/`,
             })
         }),
-
+        createRequest: builder.mutation({
+            query: (taskID) => ({
+                url: `/tasks/${taskID}/requests/`,
+                method: "POST",
+            }),
+            invalidatesTags: ["Tasks", "Requests"]
+        }),
 
     })
 })
 
 export const {
     useGetTasksListQuery,
-    useCreateTaskMutation,
+    // useCreateTaskMutation,
     useGetTaskByIdQuery,
     useUpdateTaskMutation,
     useDeleteTaskMutation,
     useApproveTaskMutation,
     useRejectTaskMutation,
     useGetRequestsQuery,
-    useGetMyTasksListQuery
+    useGetMyTasksListQuery,
+    useCreateRequestMutation,
 } = taskApiSlice

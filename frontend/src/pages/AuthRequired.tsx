@@ -4,9 +4,11 @@ import { RootState } from '../redux/store';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import type { Location, Params } from 'react-router-dom';
+import { redirect } from "react-router-dom";
 
 type AuthRequiredProps = {
-  children: React.FC
+  children: any
+  next?: string
 }
 
 
@@ -42,17 +44,17 @@ const AuthRequired = ({ children }: AuthRequiredProps) => {
   const params = useParams();
   const path = getRoutePath(location, params);
   const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
+
   useEffect(() => {
     if (!isAuthenticated && location.pathname !== '/login') {
-      navigate('/login');
+      toast.error('You need to be logged in to access this page');
+      navigate('/login?next=' + path);
     } else if (isAuthenticated && location.pathname === '/login') {
       toast.success('You are already logged in');
       navigate('/projects');
-    } else{
-      navigate(path);
     }
-    console.log("PATH: ", path);
-    console.log("AUTH: ", isAuthenticated);
+    
+
   }, []);
 
   if (isAuthenticated) {
@@ -61,6 +63,9 @@ const AuthRequired = ({ children }: AuthRequiredProps) => {
         {children}
       </>
     )
+  }
+  else {
+    return <></>;
   }
 }
 

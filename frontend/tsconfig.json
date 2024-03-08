@@ -14,8 +14,17 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
   },
-  "include": ["src"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "include": ["src", "vite-env.d.ts"],
+  "types": ["webpack-env", "vite/client"],
+  "references": [{ "path": "./tsconfig.node.json" }],
+  "baseUrl": ".",
+  "paths": {
+    "@/*": ["./*", ""],
+    "pages/*": ["src/pages/*"],
+    "components/*": ["src/components/*"],
+    "types/*": ["src/@types/*"],
+    "public/*": ["public/*"]
+  }
 }

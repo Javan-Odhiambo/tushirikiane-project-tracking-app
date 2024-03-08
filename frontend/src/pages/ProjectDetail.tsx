@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import MembersModal from '../components/MembersModal';
 import AddTaskModal from '../components/AddTaskModal';
 import AddMemberModal from '../components/AddMemberModal';
 
-import { archiveProject, getMembers, getProject, leaveProject } from '../api/api';
-import TaskContainer from '../components/TaskContainer';
+import ProjectTaskContainer from '../components/ProjectTasksContainer';
 import { Member, Project } from '../types/types';
 import ViewRequestsModal from '../components/ViewRequestsModal';
 import { useGetProjectByIdQuery, useArchiveProjectMutation, useLeaveProjectMutation, useGetMembersListQuery, useUnarchiveProjectMutation } from '../redux/features/projects/projectsApiSlice';
 import { toast } from 'react-toastify';
+import { useSelector } from 'react-redux';
 
 // TODO: Change styling
 
@@ -23,8 +23,13 @@ interface RouteParams {
 
 const ProjectDetail: React.FC = () => {
     const { projectId } = useParams<RouteParams>();
+    const navigate  = useNavigate();
     // const [project, setProject] = useState<Project | null>(null);
     // const [members, setMembers] = useState<Member[] | undefined>(undefined);
+
+    const [loggedInMember, setLoggedInMember] = useState<Member>()
+    //Get the currently logged in user from the auth slice
+    const user = useSelector((state: any) => state.auth.user)
 
     const [showMembers, setShowMembers] = useState(false);
     const [showAddTask, setShowAddTask] = useState(false);
@@ -34,10 +39,20 @@ const ProjectDetail: React.FC = () => {
     const { data: project } = useGetProjectByIdQuery(projectId);
     const { data: members } = useGetMembersListQuery(projectId);
 
-    const [leaveProject, { isLoading: LoadLeaving }] = useLeaveProjectMutation(projectId);
-    const [archiveProject, { isLoading: LoadingArchiving }] = useArchiveProjectMutation(projectId);
-    const [unarchiveProject,{ isLoading: LoadingUnarchiviing }] = useUnarchiveProjectMutation(projectId);
+    const [leaveProject, { isLoading: LoadLeaving, isSuccess: leaveProjectSuccess}] = useLeaveProjectMutation();
+    const [archiveProject, { isLoading: LoadingArchiving }] = useArchiveProjectMutation();
+    const [unarchiveProject,{ isLoading: LoadingUnarchiviing, isSuccess:UnarchiveSuccess, isError: UnarchiveError}] = useUnarchiveProjectMutation();
 
+    useEffect(() => {
+        if (project && members) {
+            let member: Member | undefined;
+            if (user) {
+                member = members.find((member: Member) => member.user.email === user.email)
+                setLoggedInMember(member)
+            }
+        }
+    }
+    , [project, members])
 
     const handleArchive = (project: Project) => {
         // TODO:Add confirmation modal
@@ -55,23 +70,24 @@ const ProjectDetail: React.FC = () => {
         // TODO:Add confirmation modal
 
         unarchiveProject(String(project.id))
-            .then(() => {
+        if (UnarchiveSuccess) {
                 toast.success('Project unarchived successfully')
-            })
-            .catch(err => {
-                console.log(err)
-            })
+            }
+        if (UnarchiveError) {
+            toast.error('Failed to unarchive project')
+            console.log(UnarchiveError)
+        }
+        
     }
 
     const handleLeaveProject = (project: Project) => {
-        leaveProject(String(project.id))
-            .then(() => {
-                console.log('Left project')
-            })
-            .catch(err => {
-                console.log(err)
-            })
-    }
+        if (window.confirm('Are you sure you want to leave this project?'))
+            leaveProject(String(project.id))
+            if (leaveProjectSuccess) {
+                toast.success('Left project successfully')
+                navigate('/projects')
+            }
+        }
 
     return (
         <>
@@ -100,7 +116,7 @@ const ProjectDetail: React.FC = () => {
                             </div>
                             {/* <!-- Project info End --> */}
 
-                            <TaskContainer projectId={String(project.id)} />
+                            <ProjectTaskContainer projectId={String(project.id)} />
 
                         </div>
                         {/* <!-- Main content start--> */}
@@ -127,7 +143,9 @@ const ProjectDetail: React.FC = () => {
                                     </li>
                                     {/* <!-- All users end --> */}
 
-                                    {/* TODO: <!-- Admins only start --> */}
+                                    {/*<!-- Admins only start --> */}
+                                    {loggedInMember?.is_admin || loggedInMember?.is_owner ?
+                                    <>
                                     <li id="add_task_btn"
                                         className="cursor-pointer px-5 py-2 hover:text-white hover:bg-indigo-300 rounded-lg"
                                         data-modal="#add_task_modal" onClick={() => setShowAddTask(true)}>Add Task</li>
@@ -137,17 +155,23 @@ const ProjectDetail: React.FC = () => {
                                     <li id="view_requests_btn"
                                         className="cursor-pointer px-5 py-2 hover:text-white hover:bg-indigo-300 rounded-lg"
                                         data-modal="#view_requests_modal" onClick={() => setShowViewRequests(true)}>View Requests</li>
+                                    
+                                    </>: <></>
+                                    }
                                     {/* <!-- Admins only end --> */}
+                                    
 
-                                    {/* TODO: <!-- Owner start --> */}
-                                    { project.is_active ?
+                                    {/* <!-- Owner start --> */}
+                                    {loggedInMember?.is_owner ?
+                                     project.is_active ?
                                         <li className="cursor-pointer px-5 py-2  hover:bg-yellow-300 rounded-lg" onClick={() => handleArchive(project)}>
                                             Archive Project
                                         </li>
                                         :
-                                        <li className="cursor-pointer px-5 py-2  hover:bg-green-300 rounded-lg" onClick={() => handleUnarchive(project.id)}>
+                                        <li className="cursor-pointer px-5 py-2  hover:bg-green-300 rounded-lg" onClick={() => handleUnarchive(project)}>
                                             Unarchive Project
                                         </li>
+                                        : <></>
 
                                     }
                                     {/* <!-- Owner end --> */}
@@ -162,7 +186,7 @@ const ProjectDetail: React.FC = () => {
                     </>
             }
             {projectId && showMembers ? <MembersModal setShowMembers={setShowMembers} members={members} /> : <></>}
-            {projectId && showAddTask ? <AddTaskModal setShowAddTask={setShowAddTask} members={members} projectId={projectId} /> : <></>}
+            {projectId && showAddTask ? <AddTaskModal setShowAddTask={setShowAddTask} members={members} projectId={projectId} loggedInMember={loggedInMember} /> : <></>}
             {projectId && showAddMember ? <AddMemberModal setShowAddMember={setShowAddMember} members={members} projectId={projectId} /> : <></>}
             {projectId && showViewRequests ? <ViewRequestsModal setShowViewRequests={setShowViewRequests} projectId={projectId} /> : <></>}
 

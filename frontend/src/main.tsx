@@ -21,7 +21,9 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import { Setup } from "./components/utils"
+import { PersistGate } from "redux-persist/integration/react";
 import AuthRequired from "./pages/AuthRequired";
+import { persistor } from "./redux/store";
 
 
 //TODO: Add flash messages
@@ -53,11 +55,11 @@ const router = createBrowserRouter([
   },
   {
     path: "project/:projectId",
-    element: <ProjectDetail />
+    element: <AuthRequired><ProjectDetail /></AuthRequired>
   },
   {
     path: "tasks",
-    element: <Tasks />
+    element: <AuthRequired><Tasks /></AuthRequired>
   }
 ]);
 
@@ -65,7 +67,9 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <Provider>
       <Setup />
-      <RouterProvider router={router} />
+      <PersistGate persistor={persistor}>
+        <RouterProvider router={router} />
+      </PersistGate>
     </Provider>
   </React.StrictMode>
 );
