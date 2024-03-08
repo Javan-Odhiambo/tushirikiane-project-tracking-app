@@ -16,7 +16,7 @@
     "noEmit": true,
     "jsx": "react-jsx",
   },
-  "include": ["src", "vite-env.d.ts"],
+  "include": ["src", "src/vite-env.d.ts"],
   "types": ["webpack-env", "vite/client"],
   "references": [{ "path": "./tsconfig.node.json" }],
   "baseUrl": ".",
