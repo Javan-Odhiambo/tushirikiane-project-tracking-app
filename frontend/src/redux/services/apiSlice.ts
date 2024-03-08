@@ -12,7 +12,7 @@ import { Mutex } from 'async-mutex'
 
 const mutex = new Mutex()
 const baseQuery = fetchBaseQuery({
-    baseUrl: `${import.meta.env.BACKEND_URL}`,
+    baseUrl: `https://tushirikiane-project-tracking-app.onrender.com/`,
     credentials: "include"
 })
 
