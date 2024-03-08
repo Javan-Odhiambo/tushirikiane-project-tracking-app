@@ -7,7 +7,8 @@ const localStorageService = LocalStorageService.getService();
 
 
 const api = axios.create({
-    baseURL: "https://tushirikiane-project-tracking-app.onrender.com/",
+    // baseURL: "https://tushirikiane-project-tracking-app.onrender.com/",
+    baseURL: "http://127.0.0.1:8000/",
     headers: {
         'Content-Type': 'application/json',
     },
@@ -38,7 +39,7 @@ api.interceptors.response.use((response) => {
         if (error?.response?.status === 401 && !originalRequest?._retry) {
             console.log('401 error Getting refresh token')
             originalRequest._retry = true;
-            return api.post('auth/jwt/refresh/',
+            return api.post('/auth/jwt/refresh/',
                 {
                     "refresh": localStorageService.getRefreshToken()
                 })
@@ -62,7 +63,8 @@ api.interceptors.response.use((response) => {
 
 export async function login(data: { email: string; password: string; }) {
     try {
-        const response = await api.post('auth/jwt/create/', data);
+        console.log("Inside Login")
+        const response = await api.post('/auth/jwt/create/', data);
         console.log("Attempt")
         localStorageService.setToken(response.data);
         return response.data;
@@ -143,7 +145,7 @@ export async function getProject(projectId: string | undefined) {
 
 export async function getProjectTasks(projectId: string) {
     try {
-        const response = await api.get('projects/1/tasks');
+        const response = await api.get('/projects/1/tasks');
         return response.data;
     } catch (error) {
         return Promise.reject(error);
