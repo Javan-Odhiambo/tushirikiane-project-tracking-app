@@ -7,7 +7,7 @@ import type { Location, Params } from 'react-router-dom';
 import { redirect } from "react-router-dom";
 
 type AuthRequiredProps = {
-  children: React.FC
+  children: any
   next?: string
 }
 

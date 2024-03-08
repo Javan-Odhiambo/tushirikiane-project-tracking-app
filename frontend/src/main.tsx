@@ -51,7 +51,7 @@ const router = createBrowserRouter([
   },
   {
     path: "projects",
-    element: <AuthRequired next="projects"><ProjectList /></ AuthRequired>
+    element: <AuthRequired><ProjectList /></ AuthRequired>
   },
   {
     path: "project/:projectId",
