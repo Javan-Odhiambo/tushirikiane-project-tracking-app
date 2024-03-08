@@ -2,6 +2,10 @@ import React from 'react'
 import Header from '../components/Header'
 import Footer from '../components/Footer';
 
+import task from './../assets/tasks.jpg'
+import project from './../assets/project.jpg'
+import team from './../assets/team.jpg'
+
 
 //TODO: Add mockups using the daisy ui art board
 //TODO: Get a hero section image
@@ -17,42 +21,38 @@ const Landing: React.FC = () => {
                 <p className="md:text-lg">A one way stop for tracking your Projects</p>
             </section>
 
-            <section className="text-center">
-                <h2 className="my-5 text-2xl font-semibold">Why Tushirikiane?</h2>
-                <div className="flex flex-col py-5 md:flex-row w-full items-center justify-around">
-                    <div className="mb-5">
-                        <h3 className="text-xl text-indigo-400">Track your project</h3>
-                        <p>Always know where your project is.</p>
+            <section className="text-center bg-[#fafafa]">
+                <div className="flex flex-col py-5 lg:flex-row w-full items-center justify-around">
+                    <div className="mb-5 flex-grow-1">
+                        <h3 className="text-3xl font-bold text-indigo-900">Track your project</h3>
+                        <p className='text-lg'>Always know where your project is.</p>
                     </div>
-                    <div>
-                        <img src="" alt="" />
-                        <div className="w-full h-60 bg-slate-500"> Img</div>
+                    <div className='flex-grow-1'>
+                        <img className="max-w-[600px]" src={project} alt="" />
                     </div>
                 </div>
-                <div className="flex flex-col py-5 md:flex-row bg-gray-100 w-full items-center justify-around">
-                    <div className="mb-5">
-                        <h3 className="text-xl text-indigo-400">Manage your teams</h3>
-                        <p>See all your team members and what they are up to.</p>
+                <div className="flex flex-col flex-col-reverse py-5 lg:flex-row bg-[#bfcbff] w-full items-center justify-around">
+                    <div className='flex-grow-1'>
+                        <img className="max-w-[600px]" src={team} alt="" />
                     </div>
-                    <div>
-                        <img src="" alt="" />
-                        <div className="w-full h-60 bg-slate-500"> Img</div>
+                    <div className="mb-5 flex-grow-1">
+                        <h3 className="text-3xl font-bold text-indigo-900">Manage your teams</h3>
+                        <p className='text-lg'>See all your team members and what they are up to.</p>
                     </div>
                 </div>
-                <div className="flex flex-col py-5 md:flex-row w-full items-center justify-around">
-                    <div className="mb-5">
-                        <h3 className="text-xl text-indigo-400">All your tasks in one place</h3>
-                        <p>Easily track your tasks and never miss a deadline.</p>
+                <div className="flex flex-col py-5 lg:flex-row w-full bg-[#ffe4bf] items-center justify-around">
+                    <div className="mb-5 flex-grow-1">
+                        <h3 className="text-3xl font-bold text-indigo-900">All your tasks in one place</h3>
+                        <p className='text-lg'>Easily track your tasks and never miss a deadline.</p>
                     </div>
-                    <div>
-                        <img src="" alt="" />
-                        <div className="w-full h-60 bg-slate-500"> Img</div>
+                    <div className='flex-grow-1'>
+                        <img className="max-w-[600px]" src={task} alt="" />
                     </div>
                 </div>
             </section>
             <section className="mb-3 px-4 text-center ">
-                <h2 id="about" className="my-5 text-2xl font-semibold">About</h2>
-                <p>
+                <h2 id="about" className="my-5 text-3xl font-bold">About</h2>
+                <p className='text-lg'>
                     Tushirikiane is a project tracking application for all teams.
                     The project was inspired by the lack of affordable platform for managing projects. 
                     The project was designed with university students in mind but can be utilized by anyone in a team or even as an individual.

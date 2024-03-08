@@ -1,5 +1,6 @@
 import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
+import path from 'path'
 
 
 // https://dev.to/boostup/uncaught-referenceerror-process-is-not-defined-12kg
@@ -18,6 +19,9 @@ export default defineConfig(({command, mode }) => {
           cherryPickedKeys.map((key) => [key, JSON.stringify(env[key])])
         ),
       },
+      // https://stackoverflow.com/questions/75201705/how-to-set-multiple-aliases-in-vite-react
+      alias: {
+        "@/": path.resolve(__dirname, "./")
+      }
     }
-  }
-)
+});

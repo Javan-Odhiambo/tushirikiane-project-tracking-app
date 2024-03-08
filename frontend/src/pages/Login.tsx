@@ -4,7 +4,7 @@ import { useLoginMutation } from '../redux/features/auth/authApiSlice'
 import { useNavigate } from 'react-router-dom'
 import {toast} from 'react-toastify'
 import { useDispatch } from 'react-redux'
-import { setAuth } from '../redux/features/auth/authSlice'
+import { setAuth, setUser } from '../redux/features/auth/authSlice'
 
 
 // TODO: Change styling
@@ -25,10 +25,13 @@ const Login: React.FC = () => {
         .then((data) => {
             toast.success('Logged in successfully')
             dispatch(setAuth())
+            dispatch(setUser({email}))
             navigate('/projects')
             console.log(data)
         })
         .catch((error) => {
+            toast.error(error.data.detail)
+            setPassword('')
             console.log(error)
         })
 

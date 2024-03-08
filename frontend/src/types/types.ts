@@ -10,6 +10,7 @@ export interface User {
 }
 
 export interface Member extends User {
+    id: number,
     user: User,
     is_owner: boolean,
     is_admin: boolean
@@ -48,6 +49,7 @@ export type TaskInput = {
     "project": string,
     "start_at": string | null,
     "due_at": string | null,
+    "assignee": number,
 }
 type TaskRequestStatus = "pending" | "accepted" | "rejected"
 

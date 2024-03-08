@@ -1,9 +1,26 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { ReactEventHandler } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { logout } from '../redux/features/auth/authSlice'
+import { useSelector } from 'react-redux';
+import { RootState, purgeData } from '../redux/store';
+
+
 
 // TODO: conditional rendering for when the user is on the landing page.
 //TODO: Add case when user does not have a profile picture
 const Header = () => {
+  const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
+  const navigate = useNavigate();
+
+
+  const handleLogout = (e: React.MouseEvent<HTMLLIElement>) => {
+    e.preventDefault();
+    console.log('logging out')
+    logout();
+    purgeData();
+    navigate('/login')
+  }
+  
   return (
     <div className="navbar bg-base-100 shadow">
       <div className="flex-1">
@@ -22,15 +39,14 @@ const Header = () => {
             </div>
           </div>
           <ul className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
-            <li>
+            {/* <li>
               <a className="justify-between">
                 Profile
                 <span className="badge">New</span>
               </a>
-            </li>
-            <li><a>Settings</a></li>
-            <li><Link to="login">Login</Link></li>
-            <li><a>Logout</a></li>
+            </li> */}
+            {/* <li><a>Settings</a></li> */}
+            { !isAuthenticated ? <li><Link to="/login">Login</Link></li> : <li onClick={handleLogout}><a>Logout</a></li>}
           </ul>
         </div>
         

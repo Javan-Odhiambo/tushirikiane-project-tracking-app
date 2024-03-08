@@ -1,26 +1,35 @@
+// https://blog.logrocket.com/getting-started-react-select/
+
 import React, { useState, useEffect, MouseEventHandler } from 'react'
+import Select from "react-select";
+
 
 import Input from './Input'
-import { Member } from '../types/types'
+import { Member, TaskInput } from '../types/types'
 import { capitalize } from '../utils/utils'
-import { createTask } from '../api/api'
 
+import { useCreateTaskMutation } from '../redux/features/projects/projectsApiSlice'
+import { toast } from 'react-toastify'
 type AddTaskModalProps = {
     setShowAddTask: Function
     projectId: string
     members?: Member[]
+    loggedInMember?: Member
 }
 
 
-const AddTaskModal = ({ setShowAddTask, projectId, members }: AddTaskModalProps) => {
+const AddTaskModal = ({ setShowAddTask, projectId, members, loggedInMember }: AddTaskModalProps) => {
     const [title, setTitle] = useState('')
     const [description, setDescription] = useState('')
     const [startAt, setStartAt] = useState('')
     const [dueAt, setDueAt] = useState('')
-    const [assignee, setAssignee] = useState(NaN)
+    const [assigneeOption, setAssigneeOption] = useState<{value: string; label:string} | null>(null)
+    const selectOptions = members?.map((member: Member) => ({value: member.id, label: capitalize(member.user.first_name) + ' ' + capitalize(member.user.last_name)}))
     const [error, setError] = useState('')
     const [success, setSuccess] = useState('')
     const [loading, setLoading] = useState(false)
+
+    const [createTaskMutation, {isLoading, isError, isSuccess}] = useCreateTaskMutation()
 
 
     const closeAddTaskModal: MouseEventHandler = (e) => {
@@ -30,19 +39,27 @@ const AddTaskModal = ({ setShowAddTask, projectId, members }: AddTaskModalProps)
 
     const formHandler = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        createTask({ title, description, start_at: startAt, due_at: dueAt, project: projectId })
-            .then(res => {
-                console.log(res)
-                setSuccess('Task created successfully')
-                setLoading(false)
-                setShowAddTask(false)
+        //TODO: Assignee
+        const payload: TaskInput = {
+            title,
+            description,
+            start_at: startAt,
+            due_at: dueAt,
+            project: '',
+            assignee: 0
+        } 
+
+        createTaskMutation({ projectID: projectId, task: payload })
+            .unwrap()
+            .then((data) => {
+                toast.success('Task created successfully')
+                console.log(data)
             })
-            .catch(err => {
-                console.log(err)
-                setError('An error occurred')
-                setLoading(false)
+            .catch((error) => {
+                toast.error('An error occurred')
+                console.log(error)
             })
-        console.log(e)
+   
     }
 
     return (
@@ -57,7 +74,7 @@ const AddTaskModal = ({ setShowAddTask, projectId, members }: AddTaskModalProps)
                 </span>
                 <div>
                     <h4 className="text-lg font-semibold">Add a new task</h4>
-                    <form className="space-y-5 flex flex-col mx-auto" action="" onSubmit={() => formHandler}>
+                    <form className="space-y-5 flex flex-col mx-auto" onSubmit={formHandler}>
                         <div className="text-left space-y-1">
                             <label htmlFor="title">Title:</label>
                             <Input type="text" name='title' id="title" state={title} setState={setTitle}></Input>
@@ -80,12 +97,11 @@ const AddTaskModal = ({ setShowAddTask, projectId, members }: AddTaskModalProps)
 
                         <div className="text-left space-y-1">
                             <label htmlFor="assignee">Assingee: </label>
-                            <select className="border border-gray-400 rounded-full w-full pl-2 py-1 focus:outline-indigo-400"
-                                name="assignee" id="assignee">
-                                {members?.map((member: Member, index: number) => (
-                                    <option key={index} value={member.email}>{capitalize(member.user.first_name)} {capitalize(member.user.last_name)}</option>
-                                ))}
-                            </select>
+                            <Select 
+                                className={"border border-gray-400 rounded-full w-full pl-2 py-1 focus:outline-indigo-400"}
+                                options={selectOptions}
+                                onChange={(option) => option ?? setAssigneeOption(option)}
+                            />
                         </div>
                         <button className="bg-indigo-600 rounded-full text-white py-1" type="submit">Add task</button>
                     </form>

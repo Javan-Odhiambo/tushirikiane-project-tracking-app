@@ -4,12 +4,13 @@ import { Link } from 'react-router-dom'
 import ProjectCard from '../components/ProjectCard'
 import { useGetProjectsListQuery } from '../redux/features/projects/projectsApiSlice'
 
-// import { getProjects } from '../api/api'
 import { Project } from '../types/types'
+import AddProjectModal from '../components/AddProjectModal'
 
 const ProjectList: React.FC = () => {
 
     const {data : projects, isLoading } = useGetProjectsListQuery()
+    const [showAddProject, setShowAddProject] = useState<boolean>(false)
     // const [projects, setProjects] = useState<Project[]>([]);
 
 
@@ -17,7 +18,7 @@ const ProjectList: React.FC = () => {
         <>
             <Header />
             <main className="flex-grow flex relative mb-5">
-                <div className="mx-auto md:mx-0 md:max-w-[calc(100%-230px)]">
+                <div className="mx-auto md:mx-0 md:w-[calc(100vw-280px)]">
                     <h1 className="text-3xl font-bold my-4 text-center">My Projects</h1>
 
                     <section className="border border-indigo-200 rounded-md shadow mx-4">
@@ -43,7 +44,7 @@ const ProjectList: React.FC = () => {
                     </span>
                     <div className="">
                         <ul>
-                            <li id="add_project_button" className="cursor-pointer" data-modal="#add_project_modal">Add Project</li>
+                            <li className="cursor-pointer" onClick={() => setShowAddProject((prev) => !prev)} >Add Project</li>
                             <li></li>
                             <li></li>
                         </ul>
@@ -51,7 +52,8 @@ const ProjectList: React.FC = () => {
                 </section>
 
             </main>
-
+            {/* <!-----Add Project Modal-------> */}
+            { showAddProject ? <AddProjectModal setShowAddProject={setShowAddProject} />: <></> }
         </>
     )
 }

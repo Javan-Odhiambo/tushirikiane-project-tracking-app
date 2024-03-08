@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-import { getProjectTasks } from '../api/api';
+import { useGetMyTasksListQuery } from '../redux/features/tasks/tasksApiSlice';
 
 import { Task } from '../types/types';
 import { capitalize, formatFullDateTime } from '../utils/utils';
@@ -9,46 +9,41 @@ type TaskContainerProps = {
     projectId: string
 }
 
-const TaskContainer = ({ projectId }: TaskContainerProps) => {
-    const [showPending, setShowPending] = useState(true);
-    const [showAssigned, setShowAssigned] = useState(false);
+const TaskListContainer = () => {
+    const [showAssigned, setShowAssigned] = useState(true);
     const [showInProgress, setShowInProgress] = useState(false);
     const [showCompleted, setShowCompleted] = useState(false);
 
 
-    const [pendingTasks, setPendingTasks] = useState<Task[]>([]);
     const [assignedTasks, setAssignedTasks] = useState<Task[]>([]);
     const [inProgressTasks, setInProgressTasks] = useState<Task[]>([]);
     const [completedTasks, setCompletedTasks] = useState<Task[]>([]);
 
+    const { data: tasks } = useGetMyTasksListQuery();
+
     const makeActive = (e: React.MouseEvent) => {
         switch ((e.target as HTMLSpanElement).id) {
             case 'pending_btn':
-                setShowPending(true);
                 setShowAssigned(false);
                 setShowInProgress(false);
                 setShowCompleted(false);
                 break;
             case 'assigned_btn':
-                setShowPending(false);
                 setShowAssigned(true);
                 setShowInProgress(false);
                 setShowCompleted(false);
                 break;
             case 'in_progress_btn':
-                setShowPending(false);
                 setShowAssigned(false);
                 setShowInProgress(true);
                 setShowCompleted(false);
                 break;
             case 'completed_btn':
-                setShowPending(false);
                 setShowAssigned(false);
                 setShowInProgress(false);
                 setShowCompleted(true);
                 break;
             default:
-                setShowPending(true);
                 setShowAssigned(false);
                 setShowInProgress(false);
                 setShowCompleted(false);
@@ -57,24 +52,17 @@ const TaskContainer = ({ projectId }: TaskContainerProps) => {
     };
 
     useEffect(() => {
-        getProjectTasks(projectId)
-            .then(tasks => {
-                setPendingTasks(tasks.filter((task: Task) => task.status === 'pending'));
-                setAssignedTasks(tasks.filter((task: Task) => task.status === 'assigned'));
-                setInProgressTasks(tasks.filter((task: Task) => task.status === 'in_progress'));
-                setCompletedTasks(tasks.filter((task: Task) => task.status === 'completed'));
-            })
-            .catch(err => {
-                console.log(err);
-            });
+        if (tasks && tasks.length > 0) {
+            setAssignedTasks(tasks.filter((task: Task) => task.status === 'assigned'));
+            setInProgressTasks(tasks.filter((task: Task) => task.status === 'in_progress'));
+            setCompletedTasks(tasks.filter((task: Task) => task.status === 'completed'));
+        }
     }, []);
 
     return (
         <section className="border border-indigo-200 rounded-md overflow-hidden shadow mx-4 md:w-[calc(100vw-280px)]">
             {/* <!-- Task headings container Start--> */}
             <div className="flex text-lg border-b border-indigo-200 font-semibold text-center">
-                <span onClick={makeActive} id="pending_btn"
-                    className={`heading_btn hover:cursor-pointer flex-1 py-1  border-r border-indigo-200 ${showPending ? "active_tab" : ""}`}>Pending</span>
                 <span onClick={makeActive} id="assigned_btn"
                     className={`heading_btn hover:cursor-pointer flex-1 py-1  border-r border-indigo-200 ${showAssigned ? "active_tab" : ""}`}>Assigned</span>
                 <span onClick={makeActive} id="in_progress_btn"
@@ -86,33 +74,6 @@ const TaskContainer = ({ projectId }: TaskContainerProps) => {
 
             {/* <!-----Project's tasks container-------> */}
             <div className="flex">
-
-                {/* <!---------------Pending tasks container-----------------------> */}
-                {
-                    showPending ?
-                        <div id="pending" className="tab-content w-full">
-
-                            {pendingTasks.length > 0 ?
-                                pendingTasks.map((task: Task, index: number) => {
-                                    return (
-                                        <div key={index} className="border-b border-gray-200 p-2">
-                                            <h3 className="text-xl font-bold">{task.title}</h3>
-                                            <p className="text-gray-600 mb-2">{task.description}</p>
-                                            <div className="flex items-center justify-between">
-                                                <button className="py-1 px-3 bg-indigo-600 rounded-md text-white"> Request</button>
-                                            </div>
-                                        </div>
-                                    )
-                                })
-                                :
-                                <div>No Pending tasks</div>
-                            }
-
-                        </div>
-                        :
-                        <></>
-                }
-                {/* <!---------------Pending tasks container End-----------------------> */}
 
                 {/* <!---------------Assigned tasks container-----------------------> */}
                 {
@@ -272,4 +233,4 @@ const TaskContainer = ({ projectId }: TaskContainerProps) => {
     )
 }
 
-export default TaskContainer
+export default TaskListContainer

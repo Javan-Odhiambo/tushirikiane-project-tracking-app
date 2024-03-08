@@ -1,4 +1,5 @@
-import { Project, Task } from "../../../types/types";
+import ProjectCard from "../../../components/ProjectCard";
+import { Member, Project, Task, TaskInput } from "../../../types/types";
 import { apiSlice } from "../../services/apiSlice";
 
 
@@ -6,17 +7,20 @@ import { apiSlice } from "../../services/apiSlice";
 const projectApiSlice = apiSlice.injectEndpoints({
     endpoints: builder => ({
         getProjectById: builder.query<Project, (string | undefined)>({
-            query: (id) => `/projects/${id}/`
+            query: (id) => `/projects/${id}/`,
+            providesTags: ["Project"],
         }),
         getProjectsList: builder.query<Project[], void>({
             query: () => ({
                 url: "/projects/",
-            })
+            }),
+            providesTags: ["Projects"],
         }),
-        getMembersList: builder.query<Project[], (string | undefined)>({
+        getMembersList: builder.query<Member[], (string | undefined)>({
             query: (id) => ({
                 url: `/projects/${id}/members/`,
-            })
+            }),
+            providesTags: ["Members"],
         }),
         //TODO: Test this
         getProjectTaskList: builder.query<Task[], (string | undefined)>({
@@ -34,8 +38,8 @@ const projectApiSlice = apiSlice.injectEndpoints({
         }),
         //TODO: Test this
         createTask: builder.mutation({
-            query: ({ id, task }: {id:string, task: Task}) => ({
-                url: `/projects/${id}/tasks/`,
+            query: ({ projectID, ...task }: {projectID: string, task: TaskInput}) => ({
+                url: `/projects/${projectID}/tasks/`,
                 method: "POST",
                 body: { task },
             })
@@ -45,7 +49,8 @@ const projectApiSlice = apiSlice.injectEndpoints({
                 url: "/projects/",
                 method: "POST",
                 body: { title, description, is_active },
-            })
+            }),
+            invalidatesTags: ["Projects"]
         }),
         //TODO: Test this
         removeProjectMember: builder.mutation({
@@ -53,7 +58,8 @@ const projectApiSlice = apiSlice.injectEndpoints({
                 url: `/projects/${id}/remove_member/`,
                 method: "POST",
                 body: { memberID },
-            })
+            }),
+            invalidatesTags: ["Members"]
         }),
         //TODO: Test this
         removeProjectAdmin: builder.mutation({
@@ -61,7 +67,8 @@ const projectApiSlice = apiSlice.injectEndpoints({
                 url: `/projects/${id}/remove_admin/`,
                 method: "POST",
                 body: { memberID },
-            })
+            }),
+            invalidatesTags: ["Members"]
         }),
         //TODO: Test this
         makeProjectAdmin: builder.mutation({
@@ -69,27 +76,36 @@ const projectApiSlice = apiSlice.injectEndpoints({
                 url: `/projects/${id}/make_admin/`,
                 method: "POST",
                 body: { memberID },
-            })
+            }),
+            invalidatesTags: ["Members"]
         }),
         archiveProject: builder.mutation({
             query: (id) => ({
                 url: `/projects/${id}/archive_project/`,
                 method: "POST",
                 body: { id },
-            })
+            }),
+            invalidatesTags: ["Project"]
         }),
         unarchiveProject: builder.mutation({
-            query: ({ id }) => ({
+            query: (id) => ({
                 url: `/projects/${id}/unarchive_project/`,
                 method: "POST",
                 body: { id },
-            })
+            }),
+            invalidatesTags: ["Project"]
         }),
         leaveProject: builder.mutation({
-            query: ({ id }) => ({
+            query: (id) => ({
                 url: `/projects/${id}/leave_project/`,
                 method: "POST",
                 body: { id },
+            }),
+            invalidatesTags: ["Project", "Projects"]
+        }),
+        getRequestList: builder.query<Request[], (string | undefined)>({
+            query: (id) => ({
+                url: `/projects/${id}/requests/`,
             })
         }),
 
@@ -110,5 +126,6 @@ export const {
     useRemoveProjectAdminMutation,
     useMakeProjectAdminMutation,
     useGetProjectTaskListQuery,
-    useCreateTaskMutation
+    useCreateTaskMutation,
+    useGetRequestListQuery
 } = projectApiSlice
