@@ -28,11 +28,11 @@ const ViewRequestsModal = ({ setShowViewRequests, projectId }: ViewRequestsModal
                 </span>
                 <div>
                     <h4 className="text-lg font-semibold">Requests</h4>
-                    <div className="overflow-y-scroll max-h-[500px]">
+                    {/* <div className="overflow-y-scroll max-h-[500px]">
                         {taskRequests &&
                         taskRequests.map((request, index) => <RequestCard key={index} taskRequest={request}/> ) }
             
-                    </div>
+                    </div> */}
                 </div>
 
             </div>

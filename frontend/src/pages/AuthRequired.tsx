@@ -64,6 +64,9 @@ const AuthRequired = ({ children }: AuthRequiredProps) => {
       </>
     )
   }
+  else {
+    return <></>;
+  }
 }
 
 export default AuthRequired

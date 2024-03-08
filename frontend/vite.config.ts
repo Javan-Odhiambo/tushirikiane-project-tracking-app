@@ -5,8 +5,7 @@ import path from 'path'
 
 // https://dev.to/boostup/uncaught-referenceerror-process-is-not-defined-12kg
 const cherryPickedKeys = [
-  "SOME_KEY_IN_YOUR_ENV_FILE",
-  "SOME_OTHER_KEY_IN_YOUR_ENV_FILE",
+  "BACKEND_URL",
 ];
 
 // https://vitejs.dev/config/
